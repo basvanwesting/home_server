@@ -1,11 +1,11 @@
-defmodule HomeServer.Users do
+defmodule HomeServer.Accounts do
   @moduledoc """
-  The Users context.
+  The Accounts context.
   """
 
   import Ecto.Query, warn: false
   alias HomeServer.Repo
-  alias HomeServer.Users.{User, UserToken, UserNotifier}
+  alias HomeServer.Accounts.{User, UserToken, UserNotifier}
 
   ## Database getters
 

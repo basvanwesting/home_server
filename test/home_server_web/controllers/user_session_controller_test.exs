@@ -1,7 +1,7 @@
 defmodule HomeServerWeb.UserSessionControllerTest do
   use HomeServerWeb.ConnCase, async: true
 
-  import HomeServer.UsersFixtures
+  import HomeServer.AccountsFixtures
 
   setup do
     %{user: user_fixture()}

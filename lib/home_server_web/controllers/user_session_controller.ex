@@ -1,7 +1,7 @@
 defmodule HomeServerWeb.UserSessionController do
   use HomeServerWeb, :controller
 
-  alias HomeServer.Users
+  alias HomeServer.Accounts
   alias HomeServerWeb.UserAuth
 
   def new(conn, _params) do
@@ -11,7 +11,7 @@ defmodule HomeServerWeb.UserSessionController do
   def create(conn, %{"user" => user_params}) do
     %{"email" => email, "password" => password} = user_params
 
-    if user = Users.get_user_by_email_and_password(email, password) do
+    if user = Accounts.get_user_by_email_and_password(email, password) do
       UserAuth.log_in_user(conn, user, user_params)
     else
       render(conn, "new.html", error_message: "Invalid email or password")

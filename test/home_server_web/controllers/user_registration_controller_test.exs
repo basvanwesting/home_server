@@ -1,7 +1,7 @@
 defmodule HomeServerWeb.UserRegistrationControllerTest do
   use HomeServerWeb.ConnCase, async: true
 
-  import HomeServer.UsersFixtures
+  import HomeServer.AccountsFixtures
 
   describe "GET /users/register" do
     test "renders registration page", %{conn: conn} do

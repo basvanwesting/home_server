@@ -1,15 +1,15 @@
 defmodule HomeServerWeb.UserConfirmationController do
   use HomeServerWeb, :controller
 
-  alias HomeServer.Users
+  alias HomeServer.Accounts
 
   def new(conn, _params) do
     render(conn, "new.html")
   end
 
   def create(conn, %{"user" => %{"email" => email}}) do
-    if user = Users.get_user_by_email(email) do
-      Users.deliver_user_confirmation_instructions(
+    if user = Accounts.get_user_by_email(email) do
+      Accounts.deliver_user_confirmation_instructions(
         user,
         &Routes.user_confirmation_url(conn, :confirm, &1)
       )
@@ -28,7 +28,7 @@ defmodule HomeServerWeb.UserConfirmationController do
   # Do not log in the user after confirmation to avoid a
   # leaked token giving the user access to the account.
   def confirm(conn, %{"token" => token}) do
-    case Users.confirm_user(token) do
+    case Accounts.confirm_user(token) do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Account confirmed successfully.")

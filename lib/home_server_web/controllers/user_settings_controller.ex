@@ -1,7 +1,7 @@
 defmodule HomeServerWeb.UserSettingsController do
   use HomeServerWeb, :controller
 
-  alias HomeServer.Users
+  alias HomeServer.Accounts
   alias HomeServerWeb.UserAuth
 
   plug :assign_email_and_password_changesets
@@ -13,9 +13,9 @@ defmodule HomeServerWeb.UserSettingsController do
   def update_email(conn, %{"current_password" => password, "user" => user_params}) do
     user = conn.assigns.current_user
 
-    case Users.apply_user_email(user, password, user_params) do
+    case Accounts.apply_user_email(user, password, user_params) do
       {:ok, applied_user} ->
-        Users.deliver_update_email_instructions(
+        Accounts.deliver_update_email_instructions(
           applied_user,
           user.email,
           &Routes.user_settings_url(conn, :confirm_email, &1)
@@ -34,7 +34,7 @@ defmodule HomeServerWeb.UserSettingsController do
   end
 
   def confirm_email(conn, %{"token" => token}) do
-    case Users.update_user_email(conn.assigns.current_user, token) do
+    case Accounts.update_user_email(conn.assigns.current_user, token) do
       :ok ->
         conn
         |> put_flash(:info, "Email changed successfully.")
@@ -50,7 +50,7 @@ defmodule HomeServerWeb.UserSettingsController do
   def update_password(conn, %{"current_password" => password, "user" => user_params}) do
     user = conn.assigns.current_user
 
-    case Users.update_user_password(user, password, user_params) do
+    case Accounts.update_user_password(user, password, user_params) do
       {:ok, user} ->
         conn
         |> put_flash(:info, "Password updated successfully.")
@@ -66,7 +66,7 @@ defmodule HomeServerWeb.UserSettingsController do
     user = conn.assigns.current_user
 
     conn
-    |> assign(:email_changeset, Users.change_user_email(user))
-    |> assign(:password_changeset, Users.change_user_password(user))
+    |> assign(:email_changeset, Accounts.change_user_email(user))
+    |> assign(:password_changeset, Accounts.change_user_password(user))
   end
 end

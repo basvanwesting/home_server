@@ -2,7 +2,7 @@ defmodule HomeServerWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
-  alias HomeServer.Users
+  alias HomeServer.Accounts
   alias HomeServerWeb.Router.Helpers, as: Routes
 
   # Make the remember me cookie valid for 60 days.
@@ -25,7 +25,7 @@ defmodule HomeServerWeb.UserAuth do
   if you are not using LiveView.
   """
   def log_in_user(conn, user, params \\ %{}) do
-    token = Users.generate_user_session_token(user)
+    token = Accounts.generate_user_session_token(user)
     user_return_to = get_session(conn, :user_return_to)
 
     conn
@@ -72,7 +72,7 @@ defmodule HomeServerWeb.UserAuth do
   """
   def log_out_user(conn) do
     user_token = get_session(conn, :user_token)
-    user_token && Users.delete_session_token(user_token)
+    user_token && Accounts.delete_session_token(user_token)
 
     if live_socket_id = get_session(conn, :live_socket_id) do
       HomeServerWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
@@ -90,7 +90,7 @@ defmodule HomeServerWeb.UserAuth do
   """
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
-    user = user_token && Users.get_user_by_session_token(user_token)
+    user = user_token && Accounts.get_user_by_session_token(user_token)
     assign(conn, :current_user, user)
   end
 

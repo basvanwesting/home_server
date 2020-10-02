@@ -1,7 +1,7 @@
-defmodule HomeServer.UsersFixtures do
+defmodule HomeServer.AccountsFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `HomeServer.Users` context.
+  entities via the `HomeServer.Accounts` context.
   """
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
@@ -14,7 +14,7 @@ defmodule HomeServer.UsersFixtures do
         email: unique_user_email(),
         password: valid_user_password()
       })
-      |> HomeServer.Users.register_user()
+      |> HomeServer.Accounts.register_user()
 
     user
   end
