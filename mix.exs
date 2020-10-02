@@ -33,6 +33,8 @@ defmodule HomeServer.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:bcrypt_elixir, "~> 2.0"},
+      {:phx_gen_auth, "~> 0.5", only: [:dev], runtime: false},
       {:phoenix, "~> 1.5.5"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},

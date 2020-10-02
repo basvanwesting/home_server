@@ -1,0 +1,101 @@
+h1 {
+  @apply pb-4 text-5xl font-semibold
+}
+h2 {
+  @apply pb-4 text-3xl font-semibold
+}
+
+.btn {
+  @apply font-semibold py-2 px-4 mr-2 rounded
+}
+.btn-primary {
+  @apply bg-blue-500 text-white
+}
+.btn-primary:hover {
+  @apply bg-blue-700 text-white
+}
+.btn-warning {
+  @apply bg-orange-500 text-white
+}
+.btn-warning:hover {
+  @apply bg-orange-700 text-white
+}
+.btn-danger {
+  @apply bg-red-500 text-white
+}
+.btn-danger:hover {
+  @apply bg-red-700 text-white
+}
+.btn-success {
+  @apply bg-green-500 text-white
+}
+.btn-success:hover {
+  @apply bg-green-700 text-white
+}
+.btn-cancel {
+  @apply bg-gray-500 text-white
+}
+.btn-cancel:hover {
+  @apply bg-gray-700 text-white
+}
+
+table.table {
+  @apply table-auto mb-4 w-full
+}
+table.table th {
+  @apply px-4 py-2 border-none text-left
+}
+table.table td {
+  @apply px-4 py-2 border-none
+}
+table.table tr:nth-child(even) {
+  @apply bg-gray-200
+}
+table.table .btn {
+  @apply font-normal py-1 px-2 mr-1 rounded
+}
+table.table td.actions, table.table th.actions {
+  @apply text-right
+}
+table.table-condensed {
+  @apply w-1
+}
+table.table-condensed th {
+  @apply whitespace-no-wrap text-right
+}
+table.table-condensed td {
+  @apply whitespace-no-wrap text-left
+}
+
+form.form {
+  @apply px-8 pt-6 pb-8 mb-4 bg-white
+  /* @apply rounded shadow-md */
+}
+form.form label {
+  @apply block mb-2 text-sm font-bold text-gray-700
+}
+form.form input:not([type=checkbox]) {
+  @apply w-full px-3 py-2 mb-2 leading-tight text-gray-700 border rounded shadow appearance-none
+}
+form.form input[type=checkbox] {
+}
+form.form span.invalid-feedback {
+  @apply block text-red-500 mb-2
+}
+form.form .btn {
+  @apply mt-4
+}
+
+a.nav_menu_item {
+  @apply block mt-4 text-gray-800 mr-4
+}
+a.nav_menu_item:hover {
+  @apply text-black font-semibold
+}
+@screen lg {
+  a.nav_menu_item {
+    @apply inline-block mt-0
+  }
+}
+
+
