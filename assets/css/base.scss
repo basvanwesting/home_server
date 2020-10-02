@@ -72,12 +72,21 @@ form.form {
   /* @apply rounded shadow-md */
 }
 form.form label {
-  @apply block mb-2 text-sm font-bold text-gray-700
+  @apply block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2
 }
 form.form input:not([type=checkbox]) {
-  @apply w-full px-3 py-2 mb-2 leading-tight text-gray-700 border rounded shadow appearance-none
+  @apply appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight
+}
+form.form input:not([type=checkbox]):focus {
+  @apply outline-none bg-white border-gray-500
 }
 form.form input[type=checkbox] {
+}
+form.form select {
+  @apply block w-full px-4 py-3 pr-8 leading-tight text-gray-700 bg-gray-200 border border-gray-200 rounded appearance-none
+}
+form.form select:focus {
+  @apply outline-none bg-white border-gray-500
 }
 form.form span.invalid-feedback {
   @apply block text-red-500 mb-2

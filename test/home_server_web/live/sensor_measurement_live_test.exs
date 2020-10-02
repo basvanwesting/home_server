@@ -1,0 +1,118 @@
+defmodule HomeServerWeb.SensorMeasurementLiveTest do
+  use HomeServerWeb.ConnCase
+
+  import Phoenix.LiveViewTest
+
+  import HomeServer.AccountsFixtures
+
+  alias HomeServer.SensorMeasurements
+
+  @create_attrs %{location: "some location", measured_at: "2010-04-17T14:00:00Z", quantity: "some quantity", source: "some source", unit: "some unit", value: "120.5"}
+  @update_attrs %{location: "some updated location", measured_at: "2011-05-18T15:01:01Z", quantity: "some updated quantity", source: "some updated source", unit: "some updated unit", value: "456.7"}
+  @invalid_attrs %{location: nil, measured_at: nil, quantity: nil, source: nil, unit: nil, value: nil}
+
+  defp fixture(:sensor_measurement) do
+    {:ok, sensor_measurement} = SensorMeasurements.create_sensor_measurement(@create_attrs)
+    sensor_measurement
+  end
+
+  defp create_sensor_measurement(_) do
+    sensor_measurement = fixture(:sensor_measurement)
+    %{sensor_measurement: sensor_measurement}
+  end
+
+  describe "Index" do
+    setup [:create_sensor_measurement]
+
+    test "lists all sensor_measurements", %{conn: conn, sensor_measurement: sensor_measurement} do
+      {:ok, _index_live, html} = live(conn, Routes.sensor_measurement_index_path(conn, :index))
+
+      assert html =~ "Listing Sensor measurements"
+      assert html =~ sensor_measurement.location
+    end
+
+    test "saves new sensor_measurement", %{conn: conn} do
+      {:ok, index_live, _html} = live(conn, Routes.sensor_measurement_index_path(conn, :index))
+
+      assert index_live |> element("a", "New Sensor measurement") |> render_click() =~
+               "New Sensor measurement"
+
+      assert_patch(index_live, Routes.sensor_measurement_index_path(conn, :new))
+
+      assert index_live
+             |> form("#sensor_measurement-form", sensor_measurement: @invalid_attrs)
+             |> render_change() =~ "can&apos;t be blank"
+
+      {:ok, _, html} =
+        index_live
+        |> form("#sensor_measurement-form", sensor_measurement: @create_attrs)
+        |> render_submit()
+        |> follow_redirect(conn, Routes.sensor_measurement_index_path(conn, :index))
+
+      assert html =~ "Sensor measurement created successfully"
+      assert html =~ "some location"
+    end
+
+    test "updates sensor_measurement in listing", %{conn: conn, sensor_measurement: sensor_measurement} do
+      {:ok, index_live, _html} = live(conn, Routes.sensor_measurement_index_path(conn, :index))
+
+      assert index_live |> element("#sensor_measurement-#{sensor_measurement.id} a", "Edit") |> render_click() =~
+               "Edit Sensor measurement"
+
+      assert_patch(index_live, Routes.sensor_measurement_index_path(conn, :edit, sensor_measurement))
+
+      assert index_live
+             |> form("#sensor_measurement-form", sensor_measurement: @invalid_attrs)
+             |> render_change() =~ "can&apos;t be blank"
+
+      {:ok, _, html} =
+        index_live
+        |> form("#sensor_measurement-form", sensor_measurement: @update_attrs)
+        |> render_submit()
+        |> follow_redirect(conn, Routes.sensor_measurement_index_path(conn, :index))
+
+      assert html =~ "Sensor measurement updated successfully"
+      assert html =~ "some updated location"
+    end
+
+    test "deletes sensor_measurement in listing", %{conn: conn, sensor_measurement: sensor_measurement} do
+      {:ok, index_live, _html} = live(conn, Routes.sensor_measurement_index_path(conn, :index))
+
+      assert index_live |> element("#sensor_measurement-#{sensor_measurement.id} a", "Delete") |> render_click()
+      refute has_element?(index_live, "#sensor_measurement-#{sensor_measurement.id}")
+    end
+  end
+
+  describe "Show" do
+    setup [:create_sensor_measurement]
+
+    test "displays sensor_measurement", %{conn: conn, sensor_measurement: sensor_measurement} do
+      {:ok, _show_live, html} = live(conn, Routes.sensor_measurement_show_path(conn, :show, sensor_measurement))
+
+      assert html =~ "Show Sensor measurement"
+      assert html =~ sensor_measurement.location
+    end
+
+    test "updates sensor_measurement within modal", %{conn: conn, sensor_measurement: sensor_measurement} do
+      {:ok, show_live, _html} = live(conn, Routes.sensor_measurement_show_path(conn, :show, sensor_measurement))
+
+      assert show_live |> element("a", "Edit") |> render_click() =~
+               "Edit Sensor measurement"
+
+      assert_patch(show_live, Routes.sensor_measurement_show_path(conn, :edit, sensor_measurement))
+
+      assert show_live
+             |> form("#sensor_measurement-form", sensor_measurement: @invalid_attrs)
+             |> render_change() =~ "can&apos;t be blank"
+
+      {:ok, _, html} =
+        show_live
+        |> form("#sensor_measurement-form", sensor_measurement: @update_attrs)
+        |> render_submit()
+        |> follow_redirect(conn, Routes.sensor_measurement_show_path(conn, :show, sensor_measurement))
+
+      assert html =~ "Sensor measurement updated successfully"
+      assert html =~ "some updated location"
+    end
+  end
+end

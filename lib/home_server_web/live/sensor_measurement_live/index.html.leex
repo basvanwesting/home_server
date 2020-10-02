@@ -1,0 +1,45 @@
+<h1>Listing Sensor measurements</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, HomeServerWeb.SensorMeasurementLive.FormComponent,
+    id: @sensor_measurement.id || :new,
+    title: @page_title,
+    action: @live_action,
+    sensor_measurement: @sensor_measurement,
+    return_to: Routes.sensor_measurement_index_path(@socket, :index) %>
+<% end %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Measured at</th>
+      <th>Quantity</th>
+      <th>Value</th>
+      <th>Unit</th>
+      <th>Location</th>
+      <th>Source</th>
+
+      <th class="actions">Actions</th>
+    </tr>
+  </thead>
+  <tbody id="sensor_measurements">
+    <%= for sensor_measurement <- @sensor_measurements do %>
+      <tr id="sensor_measurement-<%= sensor_measurement.id %>">
+        <td><%= sensor_measurement.measured_at %></td>
+        <td><%= sensor_measurement.quantity %></td>
+        <td><%= sensor_measurement.value %></td>
+        <td><%= sensor_measurement.unit %></td>
+        <td><%= sensor_measurement.location %></td>
+        <td><%= sensor_measurement.source %></td>
+
+        <td class="actions">
+          <%= live_redirect "Show", to: Routes.sensor_measurement_show_path(@socket, :show, sensor_measurement), class: "btn btn-primary" %>
+          <%= live_patch "Edit", to: Routes.sensor_measurement_index_path(@socket, :edit, sensor_measurement), class: "btn btn-warning"  %>
+          <%= link "Delete", to: "#", phx_click: "delete", phx_value_id: sensor_measurement.id, data: [confirm: "Are you sure?"], class: "btn btn-danger" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= live_patch "New Sensor measurement", to: Routes.sensor_measurement_index_path(@socket, :new), class: "btn btn-primary" %>

@@ -1,0 +1,41 @@
+<h1>Show Sensor Measurement</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, HomeServerWeb.SensorMeasurementLive.FormComponent,
+    id: @sensor_measurement.id,
+    title: @page_title,
+    action: @live_action,
+    sensor_measurement: @sensor_measurement,
+    return_to: Routes.sensor_measurement_show_path(@socket, :show, @sensor_measurement) %>
+<% end %>
+
+
+<table class="table table-condensed">
+  <tr>
+    <th>Measured At</th>
+    <td><%= @sensor_measurement.measured_at %></td>
+  </tr>
+  <tr>
+    <th>Location</th>
+    <td><%= @sensor_measurement.location %></td>
+  </tr>
+  <tr>
+    <th>Quantity</th>
+    <td><%= @sensor_measurement.quantity %></td>
+  </tr>
+  <tr>
+    <th>Value</th>
+    <td><%= @sensor_measurement.value %></td>
+  </tr>
+  <tr>
+    <th>Unit</th>
+    <td><%= @sensor_measurement.unit %></td>
+  </tr>
+  <tr>
+    <th>Source</th>
+    <td><%= @sensor_measurement.source %></td>
+  </tr>
+</table>
+
+<%= live_patch "Edit", to: Routes.sensor_measurement_show_path(@socket, :edit, @sensor_measurement), class: "btn btn-warning" %>
+<%= live_redirect "Back", to: Routes.sensor_measurement_index_path(@socket, :index), class: "btn btn-cancel" %>
