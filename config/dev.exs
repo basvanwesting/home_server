@@ -74,3 +74,9 @@ config :phoenix, :stacktrace_depth, 20
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :amqp, :sensor_measurements_queue, "sensor_measurements_dev"
+config :amqp, :connection_options,
+  host:     "localhost",
+  username: "guest",
+  password: "guest"

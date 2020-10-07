@@ -20,7 +20,7 @@ defmodule HomeServer.MixProject do
   def application do
     [
       mod: {HomeServer.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:lager, :logger, :runtime_tools]
     ]
   end
 
@@ -48,7 +48,9 @@ defmodule HomeServer.MixProject do
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:broadway_rabbitmq, "~> 0.6.0"},
+      {:amqp, "~> 1.0"},
     ]
   end
 

@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+
+  web:
+    image: basvanwesting/home_server_web:latest
+    ports:
+      - "4000:4000"
+    environment:
+      - "DATABASE_URL=ecto://postgres:example@db/home_server_prod"
+      - "SECRET_KEY_BASE=..."
+
+  db:
+    image: postgres
+    environment:
+      - "POSTGRES_PASSWORD=example"

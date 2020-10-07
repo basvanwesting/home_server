@@ -3,17 +3,24 @@ version: '3.7'
 services:
 
   web:
-    image: basvanwesting/home_server_web:latest
-    #build:
-      #context: .
-      #target: development
+    build: .
+    volumes:
+      - .:/app
     ports:
       - "4000:4000"
     environment:
-      - "DATABASE_URL=ecto://postgres:example@db/home_server_prod"
-      - "SECRET_KEY_BASE=eEtJmGWlWV3M2sbURunuq0mP6EHN2wVVpH4K0+6AOSf2upt/WD0xXZ1iwUJ8e72H"
+      - "DATABASE_URL=ecto://postgres:example@db/home_server_dev"
+    depends_on:
+      - db
+      - rabbitmq
 
   db:
     image: postgres
     environment:
       - "POSTGRES_PASSWORD=example"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
