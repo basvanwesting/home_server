@@ -13,14 +13,14 @@ RUN mix local.hex --force && \
 # set build ENV
 ENV MIX_ENV=prod
 
+# build assets, slow step due to node-sass on arm64
+COPY assets/package.json assets/package-lock.json ./assets/
+RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
+
 # install mix dependencies
 COPY mix.exs mix.lock ./
 COPY config config
 RUN mix do deps.get, deps.compile
-
-# build assets
-COPY assets/package.json assets/package-lock.json ./assets/
-RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
 
 COPY priv priv
 COPY assets assets
