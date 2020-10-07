@@ -1,12 +1,9 @@
-FROM elixir:1.10-alpine
+FROM elixir:1.10
 
-# install build dependencies
-RUN apk add --no-cache \
-    build-base \
-    npm \
-    git \
-    python \
-    ncurses-libs
+RUN apt-get update && apt-get install -y \
+      build-essential \
+      nodejs \
+      npm
 
 # prepare build dir
 WORKDIR /app
@@ -15,11 +12,12 @@ WORKDIR /app
 RUN mix local.hex --force && \
     mix local.rebar --force
 
-RUN mix do deps.get
+COPY mix.exs mix.lock ./
+COPY config config
+RUN mix do deps.get, deps.compile
 
-# # build assets
-# COPY assets/package.json assets/package-lock.json ./assets/
-# RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
+COPY assets/package.json assets/package-lock.json ./assets/
+RUN npm --prefix ./assets install
 
 CMD ["mix", "phx.server"]
 

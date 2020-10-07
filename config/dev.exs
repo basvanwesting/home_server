@@ -5,7 +5,7 @@ config :home_server, HomeServer.Repo,
   username: "postgres",
   password: "postgres",
   database: "home_server_dev",
-  hostname: "localhost",
+  hostname: "db",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -77,6 +77,6 @@ config :phoenix, :plug_init_mode, :runtime
 
 config :amqp, :sensor_measurements_queue, "sensor_measurements_dev"
 config :amqp, :connection_options,
-  host:     "localhost",
+  host:     "rabbitmq",
   username: "guest",
   password: "guest"

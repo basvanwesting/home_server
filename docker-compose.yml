@@ -8,8 +8,6 @@ services:
       - .:/app
     ports:
       - "4000:4000"
-    environment:
-      - "DATABASE_URL=ecto://postgres:example@db/home_server_dev"
     depends_on:
       - db
       - rabbitmq
