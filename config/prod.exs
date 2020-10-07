@@ -10,7 +10,7 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :home_server, HomeServerWeb.Endpoint,
-  url: [host: "bas-rpi4-161.local", port: 4000],
+  url: [host: nil, port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
