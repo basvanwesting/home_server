@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :home_server, HomeServer.Repo,
   username: "postgres",
-  password: "postgres",
+  password: "example",
   database: "home_server_dev",
   hostname: "db",
   show_sensitive_data_on_connection_error: true,
