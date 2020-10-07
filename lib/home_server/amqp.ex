@@ -1,6 +1,6 @@
 defmodule HomeServer.AMQP do
   require Logger
-  alias AMQP.{Connection, Channel, Queue}
+  alias AMQP.{Connection, Channel, Queue, Exchange}
 
   def setup_sensor_measurements_queue() do
     with {:ok, queue_base} = Application.fetch_env(:amqp, :sensor_measurements_queue),
