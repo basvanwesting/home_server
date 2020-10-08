@@ -31,13 +31,12 @@ config :home_server, HomeServerWeb.Endpoint,
   secret_key_base: secret_key_base
 
 
-config :amqp, :sensor_measurements_queue,
-  System.get_env("SENSOR_MEASUREMENTS_QUEUE") || raise "environment variable SENSOR_MEASUREMENTS_QUEUE is missing"
+config :amqp, :sensor_measurements_queue, System.fetch_env!("SENSOR_MEASUREMENTS_QUEUE")
 
 config :amqp, :connection_options,
-  host:     System.get_env("RABBIT_MQ_HOST")     || raise "environment variable RABBIT_MQ_HOST is missing",
-  username: System.get_env("RABBIT_MQ_USERNAME") || raise "environment variable RABBIT_MQ_USERNAME is missing",
-  password: System.get_env("RABBIT_MQ_PASSWORD") || raise "environment variable RABBIT_MQ_PASSWORD is missing"
+  host:     System.fetch_env!("RABBIT_MQ_HOST"),
+  username: System.fetch_env!("RABBIT_MQ_USERNAME"),
+  password: System.fetch_env!("RABBIT_MQ_PASSWORD")
 
 # ## Using releases (Elixir v1.9+)
 #
