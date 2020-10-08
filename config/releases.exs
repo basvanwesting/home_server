@@ -31,12 +31,21 @@ config :home_server, HomeServerWeb.Endpoint,
   secret_key_base: secret_key_base
 
 
-config :amqp, :sensor_measurements_queue, System.fetch_env!("SENSOR_MEASUREMENTS_QUEUE")
-
-config :amqp, :connection_options,
+sensor_measurements_queue = System.fetch_env!("SENSOR_MEASUREMENTS_QUEUE")
+amqp_connection_options = [
   host:     System.fetch_env!("RABBIT_MQ_HOST"),
   username: System.fetch_env!("RABBIT_MQ_USERNAME"),
   password: System.fetch_env!("RABBIT_MQ_PASSWORD")
+]
+
+config :amqp, :sensor_measurements_queue, sensor_measurements_queue
+config :amqp, :connection_options, amqp_connection_options
+config :broadway, :producer_module, {
+  BroadwayRabbitMQ.Producer,
+  queue: sensor_measurements_queue,
+  connection: amqp_connection_options,
+  qos: [ prefetch_count: 50 ]
+}
 
 # ## Using releases (Elixir v1.9+)
 #

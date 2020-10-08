@@ -75,8 +75,18 @@ config :phoenix, :stacktrace_depth, 20
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
 
-config :amqp, :sensor_measurements_queue, "sensor_measurements_dev"
-config :amqp, :connection_options,
+sensor_measurements_queue = "sensor_measurements_dev"
+amqp_connection_options = [
   host:     "rabbitmq",
   username: "guest",
   password: "guest"
+]
+
+config :amqp, :sensor_measurements_queue, sensor_measurements_queue
+config :amqp, :connection_options, amqp_connection_options
+config :broadway, :producer_module, {
+  BroadwayRabbitMQ.Producer,
+  queue: sensor_measurements_queue,
+  connection: amqp_connection_options,
+  qos: [ prefetch_count: 10 ]
+}

@@ -29,3 +29,5 @@ config :amqp, :connection_options,
   host:     "rabbitmq",
   username: "guest",
   password: "guest"
+
+config :broadway, :producer_module, {Broadway.DummyProducer, []}

@@ -2,18 +2,15 @@ defmodule HomeServer.SensorMeasurementsBroadway do
   use Broadway
 
   #alias Broadway.Message
+  alias HomeServer.SensorMeasurements
 
   def start_link(_opts) do
+    producer_module = Application.fetch_env!(:broadway, :producer_module)
+
     Broadway.start_link(__MODULE__,
       name: __MODULE__,
       producer: [
-        module: {BroadwayRabbitMQ.Producer,
-          queue: Application.fetch_env!(:amqp, :sensor_measurements_queue),
-          connection: Application.fetch_env!(:amqp, :connection_options),
-          qos: [
-            prefetch_count: 50,
-          ]
-        },
+        module: producer_module,
         concurrency: 2
       ],
       processors: [
@@ -26,7 +23,11 @@ defmodule HomeServer.SensorMeasurementsBroadway do
 
   @impl true
   def handle_message(_, message, _) do
-    IO.inspect(message.data, label: "Got message")
+    {:ok, _sensor_measurement} =
+      message.data
+      |> Jason.decode!
+      |> SensorMeasurements.create_sensor_measurement
+
     message
   end
 

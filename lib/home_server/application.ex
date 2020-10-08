@@ -14,9 +14,10 @@ defmodule HomeServer.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: HomeServer.PubSub},
       # Start the Endpoint (http/https)
-      HomeServerWeb.Endpoint
+      HomeServerWeb.Endpoint,
       # Start a worker by calling: HomeServer.Worker.start_link(arg)
       # {HomeServer.Worker, arg}
+      {HomeServer.SensorMeasurementsBroadway, []},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
