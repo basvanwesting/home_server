@@ -17,7 +17,13 @@ defmodule HomeServer.SensorMeasurements do
       [%SensorMeasurement{}, ...]
 
   """
-  def list_sensor_measurements do
+  def list_sensor_measurements(opts \\ [])
+  def list_sensor_measurements(limit: limit) when limit > 0 do
+    SensorMeasurement
+    |> limit(^limit)
+    |> Repo.all
+  end
+  def list_sensor_measurements([]) do
     Repo.all(SensorMeasurement)
   end
 
@@ -53,6 +59,7 @@ defmodule HomeServer.SensorMeasurements do
     %SensorMeasurement{}
     |> SensorMeasurement.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:sensor_measurement_created)
   end
 
   @doc """
@@ -71,6 +78,7 @@ defmodule HomeServer.SensorMeasurements do
     sensor_measurement
     |> SensorMeasurement.changeset(attrs)
     |> Repo.update()
+    #|> broadcast(:sensor_measurement_updated)
   end
 
   @doc """
@@ -87,6 +95,7 @@ defmodule HomeServer.SensorMeasurements do
   """
   def delete_sensor_measurement(%SensorMeasurement{} = sensor_measurement) do
     Repo.delete(sensor_measurement)
+    |> broadcast(:sensor_measurement_deleted)
   end
 
   @doc """
@@ -101,4 +110,19 @@ defmodule HomeServer.SensorMeasurements do
   def change_sensor_measurement(%SensorMeasurement{} = sensor_measurement, attrs \\ %{}) do
     SensorMeasurement.changeset(sensor_measurement, attrs)
   end
+
+  def subscribe() do
+    Phoenix.PubSub.subscribe(HomeServer.PubSub, "sensor_measurements")
+  end
+
+  def broadcast({:ok, sensor_measurement}, name) do
+    Phoenix.PubSub.broadcast(
+      HomeServer.PubSub,
+      "sensor_measurements",
+      {name, sensor_measurement}
+    )
+    {:ok, sensor_measurement}
+  end
+  def broadcast({:error, _changeset} = error, _name), do: error
+
 end

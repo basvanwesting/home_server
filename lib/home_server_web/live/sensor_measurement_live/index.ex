@@ -6,7 +6,9 @@ defmodule HomeServerWeb.SensorMeasurementLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, :sensor_measurements, list_sensor_measurements())}
+    if connected?(socket), do: SensorMeasurements.subscribe()
+
+    {:ok, assign(socket, :sensor_measurements, list_sensor_measurements(limit: 10)), temporary_assigns: [sensor_measurements: []]}
   end
 
   @impl true
@@ -36,11 +38,33 @@ defmodule HomeServerWeb.SensorMeasurementLive.Index do
   def handle_event("delete", %{"id" => id}, socket) do
     sensor_measurement = SensorMeasurements.get_sensor_measurement!(id)
     {:ok, _} = SensorMeasurements.delete_sensor_measurement(sensor_measurement)
-
-    {:noreply, assign(socket, :sensor_measurements, list_sensor_measurements())}
+    {:noreply, socket}
   end
 
-  defp list_sensor_measurements do
-    SensorMeasurements.list_sensor_measurements()
+  @impl true
+  def handle_info({:sensor_measurement_created, sensor_measurement}, socket) do
+    socket =
+      update(
+        socket,
+        :sensor_measurements,
+        fn sensor_measurements -> [sensor_measurement | sensor_measurements] end
+      )
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:sensor_measurement_deleted, sensor_measurement}, socket) do
+    socket =
+      update(
+        socket,
+        :sensor_measurements,
+        fn sensor_measurements -> [sensor_measurement | sensor_measurements] end
+      )
+
+    {:noreply, socket}
+  end
+
+  defp list_sensor_measurements(args) do
+    SensorMeasurements.list_sensor_measurements(args)
   end
 end

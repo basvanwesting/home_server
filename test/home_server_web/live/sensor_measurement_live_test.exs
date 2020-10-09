@@ -82,7 +82,7 @@ defmodule HomeServerWeb.SensorMeasurementLiveTest do
       {:ok, index_live, _html} = live(conn, Routes.sensor_measurement_index_path(conn, :index))
 
       assert index_live |> element("#sensor_measurement-#{sensor_measurement.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#sensor_measurement-#{sensor_measurement.id}")
+      refute has_element?(index_live, "#sensor_measurement-#{sensor_measurement.id}:hidden")
     end
   end
 

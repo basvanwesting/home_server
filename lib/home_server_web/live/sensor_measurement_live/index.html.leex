@@ -23,9 +23,12 @@
       <th class="actions">Actions</th>
     </tr>
   </thead>
-  <tbody id="sensor_measurements">
+  <tbody id="sensor_measurements" phx-update="prepend">
     <%= for sensor_measurement <- @sensor_measurements do %>
-      <tr id="sensor_measurement-<%= sensor_measurement.id %>">
+      <tr \
+        id="sensor_measurement-<%= sensor_measurement.id %>" \
+        <%= if sensor_measurement.__meta__.state == :deleted do %>class="hidden"<% end %> \
+        >
         <td><%= sensor_measurement.measured_at %></td>
         <td><%= sensor_measurement.quantity %></td>
         <td><%= sensor_measurement.value %></td>
