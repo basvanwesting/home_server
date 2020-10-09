@@ -33,15 +33,21 @@
   </div>
 
   <div class="w-full mb-6">
-    <%= label f, :location %>
-    <%= text_input f, :location %>
-    <%= error_tag f, :location %>
+    <%= label f, :host %>
+    <%= text_input f, :host %>
+    <%= error_tag f, :host %>
   </div>
 
   <div class="w-full mb-6">
-    <%= label f, :source %>
-    <%= text_input f, :source %>
-    <%= error_tag f, :source %>
+    <%= label f, :sensor %>
+    <%= text_input f, :sensor %>
+    <%= error_tag f, :sensor %>
+  </div>
+
+  <div class="w-full mb-6">
+    <%= label f, :location %>
+    <%= text_input f, :location %>
+    <%= error_tag f, :location %>
   </div>
 
   <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary" %>

@@ -6,9 +6,9 @@ defmodule HomeServerWeb.SensorMeasurementLiveTest do
   import HomeServer.AccountsFixtures
   import HomeServer.SensorMeasurementsFixtures
 
-  @create_attrs %{location: "some location", measured_at: "2010-04-17T14:00:00Z", quantity: "some quantity", source: "some source", unit: "some unit", value: "120.5"}
-  @update_attrs %{location: "some updated location", measured_at: "2011-05-18T15:01:01Z", quantity: "some updated quantity", source: "some updated source", unit: "some updated unit", value: "456.7"}
-  @invalid_attrs %{location: nil, measured_at: nil, quantity: nil, source: nil, unit: nil, value: nil}
+  @create_attrs %{location: "some location", measured_at: "2010-04-17T14:00:00Z", quantity: "some quantity", host: "some host", unit: "some unit", value: "120.5", sensor: "some sensor"}
+  @update_attrs %{location: "some updated location", measured_at: "2011-05-18T15:01:01Z", quantity: "some updated quantity", host: "some updated host", unit: "some updated unit", value: "456.7", sensor: "some updated sensor"}
+  @invalid_attrs %{location: nil, measured_at: nil, quantity: nil, host: nil, unit: nil, value: nil, sensor: nil}
 
   defp create_user(_) do
     %{id: _user_id} = user = user_fixture()

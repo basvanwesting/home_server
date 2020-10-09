@@ -10,12 +10,13 @@ defmodule HomeServer.SensorMeasurementsFixtures do
     {:ok, sensor_measurement} =
       attrs
       |> Enum.into(%{
-        location: "some location",
         measured_at: "2020-01-01T12:00:00Z",
         quantity: "Temperature",
         value: "22.0",
         unit: "Celsius",
-        source: "test-fixture",
+        host: "localhost",
+        sensor: "A0",
+        location: "some location",
       })
       |> SensorMeasurements.create_sensor_measurement()
 

@@ -16,8 +16,9 @@
       <th>Quantity</th>
       <th>Value</th>
       <th>Unit</th>
+      <th>Host</th>
+      <th>Sensor</th>
       <th>Location</th>
-      <th>Source</th>
 
       <th class="actions">Actions</th>
     </tr>
@@ -29,8 +30,9 @@
         <td><%= sensor_measurement.quantity %></td>
         <td><%= sensor_measurement.value %></td>
         <td><%= sensor_measurement.unit %></td>
+        <td><%= sensor_measurement.host %></td>
+        <td><%= sensor_measurement.sensor %></td>
         <td><%= sensor_measurement.location %></td>
-        <td><%= sensor_measurement.source %></td>
 
         <td class="actions">
           <%= live_redirect "Show", to: Routes.sensor_measurement_show_path(@socket, :show, sensor_measurement), class: "btn btn-primary" %>

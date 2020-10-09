@@ -12,12 +12,16 @@
 
 <table class="table table-condensed">
   <tr>
-    <th>Measured At</th>
-    <td><%= @sensor_measurement.measured_at %></td>
+    <th>Host</th>
+    <td><%= @sensor_measurement.host %></td>
   </tr>
   <tr>
-    <th>Location</th>
-    <td><%= @sensor_measurement.location %></td>
+    <th>Sensor</th>
+    <td><%= @sensor_measurement.sensor %></td>
+  </tr>
+  <tr>
+    <th>Measured At</th>
+    <td><%= @sensor_measurement.measured_at %></td>
   </tr>
   <tr>
     <th>Quantity</th>
@@ -32,8 +36,8 @@
     <td><%= @sensor_measurement.unit %></td>
   </tr>
   <tr>
-    <th>Source</th>
-    <td><%= @sensor_measurement.source %></td>
+    <th>Location</th>
+    <td><%= @sensor_measurement.location %></td>
   </tr>
 </table>
 
