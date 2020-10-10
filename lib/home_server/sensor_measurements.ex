@@ -21,6 +21,7 @@ defmodule HomeServer.SensorMeasurements do
   def list_sensor_measurements(limit: limit) when limit > 0 do
     SensorMeasurement
     |> limit(^limit)
+    |> order_by(desc: :measured_at)
     |> Repo.all
   end
   def list_sensor_measurements([]) do
