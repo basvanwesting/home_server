@@ -31,7 +31,7 @@
         >
         <td><%= sensor_measurement.measured_at %></td>
         <td><%= sensor_measurement.quantity %></td>
-        <td><%= sensor_measurement.value %></td>
+        <td><%= Decimal.round(sensor_measurement.value,1) %></td>
         <td><%= sensor_measurement.unit %></td>
         <td><%= sensor_measurement.host %></td>
         <td><%= sensor_measurement.sensor %></td>
