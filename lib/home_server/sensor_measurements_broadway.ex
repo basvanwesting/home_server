@@ -23,7 +23,7 @@ defmodule HomeServer.SensorMeasurementsBroadway do
 
   @impl true
   def handle_message(_, message, _) do
-    {:ok, _sensor_measurement} =
+    #{:ok, _sensor_measurement} =
       message.data
       |> Jason.decode!
       |> SensorMeasurements.create_sensor_measurement
