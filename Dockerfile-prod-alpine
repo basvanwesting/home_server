@@ -1,10 +1,7 @@
-FROM elixir:1.10 AS build
+FROM elixir:1.10-alpine AS build
 
 # install build dependencies
-RUN apt-get update && apt-get install -y \
-      build-essential \
-      nodejs \
-      npm
+RUN apk add --no-cache build-base npm git python libsass libsass-dev sassc
 
 # prepare build dir
 WORKDIR /app
@@ -37,18 +34,16 @@ COPY lib lib
 RUN mix do compile, release
 
 # prepare release image
-FROM debian:buster AS app
-
-RUN groupadd -g 1500 app \
-  && useradd --create-home -u 1500 -g app app
-
-RUN mkdir -p /app \
- && chown -R app:app /app
+FROM alpine:3 AS app
+RUN apk add --no-cache openssl ncurses-libs
 
 WORKDIR /app
-USER app:app
 
-COPY --from=build --chown=app:app /app/_build/prod/rel/home_server ./
+RUN chown nobody:nobody /app
+
+USER nobody:nobody
+
+COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/home_server ./
 
 ENV HOME=/app
 
