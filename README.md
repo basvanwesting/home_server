@@ -1,20 +1,18 @@
 # HomeServer
 
-To start your Phoenix server:
+## Build
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Install Node.js dependencies with `npm install` inside the `assets` directory
-  * Start Phoenix endpoint with `mix phx.server`
+Build the image on a Raspberry Pi:
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+```
+docker build -f Dockerfile-prod -t basvanwesting/home_server_web:latest .
+docker push basvanwesting/home_server_web:latest
+```
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+Using Docker Desktop (OSX) buildx with linux/arm64 doesn't result in a working image.
+Also compiling node-sass is much slower, which is rather remarkable given the differences in raw processing power (Arm Cortex A72 v. Intel Core i7).
+Possibly it is due to the extra VM's needed with Docker Desktop. 
 
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+```
+docker buildx build --platform linux/arm64 -f Dockerfile-prod -t basvanwesting/home_server_web:latest .
+```
