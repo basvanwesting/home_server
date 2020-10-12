@@ -2,10 +2,13 @@ version: '3.7'
 
 services:
 
-  web:
+  app:
     build: .
     volumes:
       - .:/app
+      - home-server-dev-deps-volume:/app/deps
+      - home-server-dev-build-volume:/app/_build
+      - home-server-dev-node-modules-volume:/app/assets/node_modules
     ports:
       - "4000:4000"
     depends_on:
@@ -14,6 +17,8 @@ services:
 
   db:
     image: postgres
+    volumes:
+      - home-server-dev-db-volume:/var/lib/postgresql/data
     environment:
       - "POSTGRES_PASSWORD=example"
 
@@ -22,3 +27,10 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+
+
+volumes:
+  home-server-dev-deps-volume:
+  home-server-dev-build-volume:
+  home-server-dev-node-modules-volume:
+  home-server-dev-db-volume:

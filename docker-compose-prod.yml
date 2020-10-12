@@ -3,14 +3,27 @@ version: '3.7'
 services:
 
   web:
-    image: basvanwesting/home_server_web:latest
+    image: nginx
+    restart: always
     ports:
-      - "4000:4000"
+      - "4443:4443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+
+  app:
+    image: basvanwesting/home_server_web:latest
+    restart: always
     environment:
-      - "DATABASE_URL=ecto://postgres:example@db/home_server_prod"
+      - "DATABASE_URL=ecto://postgres:...@db/home_server_prod"
       - "SECRET_KEY_BASE=..."
+      - "SENSOR_MEASUREMENTS_QUEUE=sensor_measurements_queue"
+      - "RABBIT_MQ_HOST=192.168.0.161"
+      - "RABBIT_MQ_USERNAME=..."
+      - "RABBIT_MQ_PASSWORD=..."
 
   db:
     image: postgres
+    restart: always
     environment:
-      - "POSTGRES_PASSWORD=example"
+      - "POSTGRES_PASSWORD=..."
