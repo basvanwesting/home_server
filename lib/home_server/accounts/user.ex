@@ -2,12 +2,26 @@ defmodule HomeServer.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias HomeServer.Locations.Location
+
+  @type t :: %__MODULE__{
+      id: non_neg_integer | nil,
+      email: binary | nil,
+      password: binary | nil,
+      hashed_password: binary | nil,
+      confirmed_at: NaiveDateTime.t() | nil,
+      locations: [Location.t()] | nil | Ecto.Association.NotLoaded.t(),
+      inserted_at: NaiveDateTime.t() | nil,
+      updated_at: NaiveDateTime.t() | nil,
+    }
+
   @derive {Inspect, except: [:password]}
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true
     field :hashed_password, :string
     field :confirmed_at, :naive_datetime
+    has_many :locations, Location
 
     timestamps()
   end

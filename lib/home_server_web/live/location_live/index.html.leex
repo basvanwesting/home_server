@@ -1,0 +1,36 @@
+<h1>Listing Locations</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, HomeServerWeb.LocationLive.FormComponent,
+    id: @location.id || :new,
+    title: @page_title,
+    action: @live_action,
+    location: @location,
+    current_user: @current_user,
+    return_to: Routes.location_index_path(@socket, :index) %>
+<% end %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+
+      <th class="actions">Actions</th>
+    </tr>
+  </thead>
+  <tbody id="locations">
+    <%= for location <- @locations do %>
+      <tr id="location-<%= location.id %>">
+        <td><%= location.name %></td>
+
+        <td class="actions">
+          <%= live_redirect "Show", to: Routes.location_show_path(@socket, :show, location), class: "btn btn-primary" %>
+          <%= live_patch "Edit", to: Routes.location_index_path(@socket, :edit, location), class: "btn btn-warning" %>
+          <%= link "Delete", to: "#", phx_click: "delete", phx_value_id: location.id, data: [confirm: "Are you sure?"], class: "btn btn-danger" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= live_patch "New Location", to: Routes.location_index_path(@socket, :new), class: "btn btn-primary" %>

@@ -67,6 +67,13 @@ defmodule HomeServerWeb.Router do
     put "/users/settings/update_email", UserSettingsController, :update_email
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
 
+    live "/locations", LocationLive.Index, :index
+    live "/locations/new", LocationLive.Index, :new
+    live "/locations/:id/edit", LocationLive.Index, :edit
+
+    live "/locations/:id", LocationLive.Show, :show
+    live "/locations/:id/show/edit", LocationLive.Show, :edit
+
     live "/sensor_measurements", SensorMeasurementLive.Index, :index
     live "/sensor_measurements/new", SensorMeasurementLive.Index, :new
     live "/sensor_measurements/:id/edit", SensorMeasurementLive.Index, :edit

@@ -1,0 +1,22 @@
+<h1>Show Location</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, HomeServerWeb.LocationLive.FormComponent,
+    id: @location.id,
+    title: @page_title,
+    action: @live_action,
+    location: @location,
+    current_user: @current_user,
+    return_to: Routes.location_show_path(@socket, :show, @location) %>
+<% end %>
+
+<table class="table table-condensed">
+  <tr>
+    <th>Name</th>
+    <td><%= @location.name %></td>
+  </tr>
+</ul>
+
+
+<%= live_patch "Edit", to: Routes.location_show_path(@socket, :edit, @location), class: "btn btn-warning" %>
+<%= live_redirect "Back", to: Routes.location_index_path(@socket, :index), class: "btn btn-cancel" %>

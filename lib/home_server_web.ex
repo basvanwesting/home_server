@@ -47,6 +47,7 @@ defmodule HomeServerWeb do
       use Phoenix.LiveView,
         layout: {HomeServerWeb.LayoutView, "live.html"}
 
+      import HomeServerWeb.LiveMountHelpers
       unquote(view_helpers())
     end
   end
