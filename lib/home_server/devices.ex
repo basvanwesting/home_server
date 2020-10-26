@@ -101,4 +101,10 @@ defmodule HomeServer.Devices do
   def change_device(%Device{} = device, attrs \\ %{}) do
     Device.changeset(device, attrs)
   end
+
+  def get_location_id_for_host(host) when is_binary(host) do
+    identifier = String.replace_prefix(host, "nerves-", "")
+    Repo.one(from d in Device, where: d.identifier == ^identifier, select: d.location_id)
+  end
+  def get_location_id_for_host(_), do: nil
 end

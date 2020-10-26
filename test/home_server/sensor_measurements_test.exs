@@ -2,6 +2,9 @@ defmodule HomeServer.SensorMeasurementsTest do
   use HomeServer.DataCase
 
   alias HomeServer.SensorMeasurements
+  import HomeServer.SensorMeasurementsFixtures
+  import HomeServer.DevicesFixtures
+  import HomeServer.LocationsFixtures
 
   describe "sensor_measurements" do
     alias HomeServer.SensorMeasurements.SensorMeasurement
@@ -9,15 +12,6 @@ defmodule HomeServer.SensorMeasurementsTest do
     @valid_attrs %{measured_at: "2010-04-17T14:00:00Z", quantity: "some quantity", host: "some host", unit: "some unit", value: "120.5", sensor: "some sensor"}
     @update_attrs %{measured_at: "2011-05-18T15:01:01Z", quantity: "some updated quantity", host: "some updated host", unit: "some updated unit", value: "456.7", sensor: "some updated sensor"}
     @invalid_attrs %{measured_at: nil, quantity: nil, host: nil, unit: nil, value: nil, sensor: nil}
-
-    def sensor_measurement_fixture(attrs \\ %{}) do
-      {:ok, sensor_measurement} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> SensorMeasurements.create_sensor_measurement()
-
-      sensor_measurement
-    end
 
     test "list_sensor_measurements/0 returns all sensor_measurements" do
       sensor_measurement = sensor_measurement_fixture()
@@ -29,7 +23,7 @@ defmodule HomeServer.SensorMeasurementsTest do
       assert SensorMeasurements.get_sensor_measurement!(sensor_measurement.id) == sensor_measurement
     end
 
-    test "create_sensor_measurement/1 with valid data creates a sensor_measurement" do
+    test "create_sensor_measurement/1 with valid data creates a sensor_measurement, no location match" do
       assert {:ok, %SensorMeasurement{} = sensor_measurement} = SensorMeasurements.create_sensor_measurement(@valid_attrs)
       assert sensor_measurement.measured_at == DateTime.from_naive!(~N[2010-04-17T14:00:00Z], "Etc/UTC")
       assert sensor_measurement.host == "some host"
@@ -37,6 +31,16 @@ defmodule HomeServer.SensorMeasurementsTest do
       assert sensor_measurement.quantity == "some quantity"
       assert sensor_measurement.unit == "some unit"
       assert sensor_measurement.value == Decimal.new("120.5")
+      assert sensor_measurement.location_id == nil
+    end
+
+    test "create_sensor_measurement/1 with valid data creates a sensor_measurement, with location match" do
+      location = location_fixture()
+      _device = device_fixture(identifier: "some host", location_id: location.id)
+
+      assert {:ok, %SensorMeasurement{} = sensor_measurement} = SensorMeasurements.create_sensor_measurement(@valid_attrs)
+      assert sensor_measurement.host == "some host"
+      assert sensor_measurement.location_id == location.id
     end
 
     test "create_sensor_measurement/1 with invalid data returns error changeset" do

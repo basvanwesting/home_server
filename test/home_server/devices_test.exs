@@ -3,21 +3,15 @@ defmodule HomeServer.DevicesTest do
 
   alias HomeServer.Devices
 
+  import HomeServer.DevicesFixtures
+  import HomeServer.LocationsFixtures
+
   describe "devices" do
     alias HomeServer.Devices.Device
 
     @valid_attrs %{identifier: "some identifier"}
     @update_attrs %{identifier: "some updated identifier"}
     @invalid_attrs %{identifier: nil}
-
-    def device_fixture(attrs \\ %{}) do
-      {:ok, device} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Devices.create_device()
-
-      device
-    end
 
     test "list_devices/0 returns all devices" do
       device = device_fixture()
@@ -59,6 +53,16 @@ defmodule HomeServer.DevicesTest do
     test "change_device/1 returns a device changeset" do
       device = device_fixture()
       assert %Ecto.Changeset{} = Devices.change_device(device)
+    end
+
+    test "get_location_id_for_host/1" do
+      location = location_fixture()
+      _device = device_fixture(location_id: location.id, identifier: "1234")
+
+      assert location.id == Devices.get_location_id_for_host("nerves-1234")
+      assert location.id == Devices.get_location_id_for_host("1234")
+      assert nil         == Devices.get_location_id_for_host("foobar")
+      assert nil         == Devices.get_location_id_for_host(nil)
     end
   end
 end
