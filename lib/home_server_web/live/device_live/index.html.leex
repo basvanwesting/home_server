@@ -1,0 +1,38 @@
+<h1>Listing Devices</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <%= live_modal @socket, HomeServerWeb.DeviceLive.FormComponent,
+    id: @device.id || :new,
+    title: @page_title,
+    action: @live_action,
+    device: @device,
+    current_user: @current_user,
+    return_to: Routes.device_index_path(@socket, :index) %>
+<% end %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Identifier</th>
+      <th>Location Name</th>
+
+      <th class="actions">Actions</th>
+    </tr>
+  </thead>
+  <tbody id="devices">
+    <%= for device <- @devices do %>
+      <tr id="device-<%= device.id %>">
+        <td><%= device.identifier %></td>
+        <td><%= device.location && device.location.name %></td>
+
+        <td class="actions">
+          <%= live_redirect "Show", to: Routes.device_show_path(@socket, :show, device), class: "btn btn-primary" %>
+          <%= live_patch "Edit", to: Routes.device_index_path(@socket, :edit, device), class: "btn btn-warning" %>
+          <%= link "Delete", to: "#", phx_click: "delete", phx_value_id: device.id, data: [confirm: "Are you sure?"], class: "btn btn-danger" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= live_patch "New Device", to: Routes.device_index_path(@socket, :new), class: "btn btn-primary" %>

@@ -1,0 +1,26 @@
+<h1>Show Device</h1>
+
+<%= if @live_action in [:edit] do %>
+  <%= live_modal @socket, HomeServerWeb.DeviceLive.FormComponent,
+    id: @device.id,
+    title: @page_title,
+    action: @live_action,
+    device: @device,
+    current_user: @current_user,
+    return_to: Routes.device_show_path(@socket, :show, @device) %>
+<% end %>
+
+<table class="table table-condensed">
+  <tr>
+    <th>Identifier</th>
+    <td><%= @device.identifier %></td>
+  </tr>
+  <tr>
+    <th>Location Name</th>
+    <td><%= @device.location && @device.location.name %></td>
+  </tr>
+</ul>
+
+
+<%= live_patch "Edit", to: Routes.device_show_path(@socket, :edit, @device), class: "btn btn-warning" %>
+<%= live_redirect "Back", to: Routes.device_index_path(@socket, :index), class: "btn btn-cancel" %>

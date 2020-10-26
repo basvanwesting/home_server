@@ -1,0 +1,29 @@
+
+<%= f = form_for @changeset, "#",
+  id: "device-form",
+  phx_target: @myself,
+  phx_change: "validate",
+  phx_submit: "save",
+  class: "form" %>
+
+  <h2><%= @title %></h2>
+
+  <div class="w-full mb-6">
+    <%= label f, :identifier %>
+    <%= text_input f, :identifier %>
+    <%= error_tag f, :identifier %>
+  </div>
+
+  <div class="w-full mb-6">
+    <%= label f, :location_id %>
+    <div class="relative">
+      <%= select f, :location_id, [" - ": nil] ++ Enum.map(@locations, &{&1.name, &1.id}) %>
+      <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+        <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+      </div>
+    </div>
+    <%= error_tag f, :location_id %>
+  </div>
+
+  <%= submit "Save", phx_disable_with: "Saving...", class: "btn btn-primary" %>
+</form>

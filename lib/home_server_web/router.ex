@@ -70,9 +70,14 @@ defmodule HomeServerWeb.Router do
     live "/locations", LocationLive.Index, :index
     live "/locations/new", LocationLive.Index, :new
     live "/locations/:id/edit", LocationLive.Index, :edit
-
     live "/locations/:id", LocationLive.Show, :show
     live "/locations/:id/show/edit", LocationLive.Show, :edit
+
+    live "/devices", DeviceLive.Index, :index
+    live "/devices/new", DeviceLive.Index, :new
+    live "/devices/:id/edit", DeviceLive.Index, :edit
+    live "/devices/:id", DeviceLive.Show, :show
+    live "/devices/:id/show/edit", DeviceLive.Show, :edit
 
     live "/sensor_measurements", SensorMeasurementLive.Index, :index
     live "/sensor_measurements/new", SensorMeasurementLive.Index, :new

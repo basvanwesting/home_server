@@ -3,6 +3,7 @@ defmodule HomeServer.Accounts.User do
   import Ecto.Changeset
 
   alias HomeServer.Locations.Location
+  alias HomeServer.Devices.Device
 
   @type t :: %__MODULE__{
       id: non_neg_integer | nil,
@@ -11,6 +12,7 @@ defmodule HomeServer.Accounts.User do
       hashed_password: binary | nil,
       confirmed_at: NaiveDateTime.t() | nil,
       locations: [Location.t()] | nil | Ecto.Association.NotLoaded.t(),
+      devices: [Device.t()] | nil | Ecto.Association.NotLoaded.t(),
       inserted_at: NaiveDateTime.t() | nil,
       updated_at: NaiveDateTime.t() | nil,
     }
@@ -22,6 +24,7 @@ defmodule HomeServer.Accounts.User do
     field :hashed_password, :string
     field :confirmed_at, :naive_datetime
     has_many :locations, Location
+    has_many :devices, Device
 
     timestamps()
   end
