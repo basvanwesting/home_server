@@ -13,9 +13,13 @@ defmodule HomeServerWeb.SensorMeasurementLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:sensor_measurement, SensorMeasurements.get_sensor_measurement!(id))}
+     |> assign(:sensor_measurement, get_sensor_measurement!(id))}
   end
 
   defp page_title(:show), do: "Show Sensor measurement"
-  defp page_title(:edit), do: "Edit Sensor measurement"
+
+  defp get_sensor_measurement!(id) do
+    SensorMeasurements.get_sensor_measurement!(id)
+    |> HomeServer.Repo.preload(:location)
+  end
 end

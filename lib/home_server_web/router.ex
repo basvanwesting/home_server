@@ -80,11 +80,7 @@ defmodule HomeServerWeb.Router do
     live "/devices/:id/show/edit", DeviceLive.Show, :edit
 
     live "/sensor_measurements", SensorMeasurementLive.Index, :index
-    live "/sensor_measurements/new", SensorMeasurementLive.Index, :new
-    live "/sensor_measurements/:id/edit", SensorMeasurementLive.Index, :edit
-
     live "/sensor_measurements/:id", SensorMeasurementLive.Show, :show
-    live "/sensor_measurements/:id/show/edit", SensorMeasurementLive.Show, :edit
   end
 
   scope "/", HomeServerWeb do

@@ -6,9 +6,9 @@ defmodule HomeServer.SensorMeasurementsTest do
   describe "sensor_measurements" do
     alias HomeServer.SensorMeasurements.SensorMeasurement
 
-    @valid_attrs %{location: "some location", measured_at: "2010-04-17T14:00:00Z", quantity: "some quantity", host: "some host", unit: "some unit", value: "120.5", sensor: "some sensor"}
-    @update_attrs %{location: "some updated location", measured_at: "2011-05-18T15:01:01Z", quantity: "some updated quantity", host: "some updated host", unit: "some updated unit", value: "456.7", sensor: "some updated sensor"}
-    @invalid_attrs %{location: nil, measured_at: nil, quantity: nil, host: nil, unit: nil, value: nil, sensor: nil}
+    @valid_attrs %{measured_at: "2010-04-17T14:00:00Z", quantity: "some quantity", host: "some host", unit: "some unit", value: "120.5", sensor: "some sensor"}
+    @update_attrs %{measured_at: "2011-05-18T15:01:01Z", quantity: "some updated quantity", host: "some updated host", unit: "some updated unit", value: "456.7", sensor: "some updated sensor"}
+    @invalid_attrs %{measured_at: nil, quantity: nil, host: nil, unit: nil, value: nil, sensor: nil}
 
     def sensor_measurement_fixture(attrs \\ %{}) do
       {:ok, sensor_measurement} =
@@ -31,7 +31,6 @@ defmodule HomeServer.SensorMeasurementsTest do
 
     test "create_sensor_measurement/1 with valid data creates a sensor_measurement" do
       assert {:ok, %SensorMeasurement{} = sensor_measurement} = SensorMeasurements.create_sensor_measurement(@valid_attrs)
-      assert sensor_measurement.location == "some location"
       assert sensor_measurement.measured_at == DateTime.from_naive!(~N[2010-04-17T14:00:00Z], "Etc/UTC")
       assert sensor_measurement.host == "some host"
       assert sensor_measurement.sensor == "some sensor"
@@ -47,7 +46,6 @@ defmodule HomeServer.SensorMeasurementsTest do
     test "update_sensor_measurement/2 with valid data updates the sensor_measurement" do
       sensor_measurement = sensor_measurement_fixture()
       assert {:ok, %SensorMeasurement{} = sensor_measurement} = SensorMeasurements.update_sensor_measurement(sensor_measurement, @update_attrs)
-      assert sensor_measurement.location == "some updated location"
       assert sensor_measurement.measured_at == DateTime.from_naive!(~N[2011-05-18T15:01:01Z], "Etc/UTC")
       assert sensor_measurement.host == "some updated host"
       assert sensor_measurement.sensor == "some updated sensor"

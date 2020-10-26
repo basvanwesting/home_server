@@ -16,7 +16,6 @@ defmodule HomeServer.SensorMeasurementsFixtures do
         unit: "Celsius",
         host: "localhost",
         sensor: "A0",
-        location: "some location",
       })
       |> SensorMeasurements.create_sensor_measurement()
 
