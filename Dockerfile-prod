@@ -39,6 +39,10 @@ RUN mix do compile, release
 # prepare release image
 FROM debian:buster AS app
 
+RUN apt-get update && apt-get install -y \
+      openssl \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN groupadd -g 1500 app \
   && useradd --create-home -u 1500 -g app app
 
