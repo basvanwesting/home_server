@@ -27,7 +27,7 @@ defmodule HomeServerWeb.SensorMeasurementLive.Index do
       update(
         socket,
         :sensor_measurements,
-        fn sensor_measurements -> [sensor_measurement | sensor_measurements] end
+        fn sensor_measurements -> [sensor_measurement |> HomeServer.Repo.preload(:location) | sensor_measurements] end
       )
 
     {:noreply, socket}
