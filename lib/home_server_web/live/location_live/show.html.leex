@@ -17,6 +17,9 @@
   </tr>
 </ul>
 
+<%= live_component @socket, HomeServerWeb.LocationLive.PlotComponent, location: @location, html_class: "h-72 w-128" %>
+<%= live_component @socket, HomeServerWeb.LocationLive.PlotComponent, location: @location, html_class: "h-72 w-128" %>
+<%= live_component @socket, HomeServerWeb.LocationLive.PlotComponent, location: @location, html_class: "h-72 w-128" %>
 
 <%= live_patch "Edit", to: Routes.location_show_path(@socket, :edit, @location), class: "btn btn-warning" %>
 <%= live_redirect "Back", to: Routes.location_index_path(@socket, :index), class: "btn btn-cancel" %>
