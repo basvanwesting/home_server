@@ -1,18 +1,18 @@
 defmodule HomeServerWeb.LocationLive.PlotComponent do
   use HomeServerWeb, :live_component
 
-  #alias HomeServer.UserLocations
+  alias HomeServer.LocationPlotQuery
   alias Contex.{LinePlot, PointPlot, Dataset, Plot}
 
   @impl true
-  def update(%{location: _location, html_class: html_class} = assigns, socket) do
-    data = [{1, 1}, {2, 2}, {3, 2}, {4, 3}]
-    ds = Dataset.new(data, ["x", "y"])
+  def update(%{location: location, quantity: quantity, unit: unit, start_measured_at: start_measured_at, end_measured_at: end_measured_at, html_class: html_class} = assigns, socket) do
+    data = LocationPlotQuery.raw_data(location.id, quantity, unit, start_measured_at, end_measured_at)
+    ds = Dataset.new(data)
     line_plot = LinePlot.new(ds)
 
     plot = Plot.new(600, 300, line_plot)
-     |> Plot.plot_options(%{legend_setting: :legend_right})
-     |> Plot.titles("My first plot", "With a fancy subtitle")
+     #|> Plot.plot_options(%{legend_setting: :legend_right})
+     |> Plot.titles(quantity, unit)
 
     plot_svg = Plot.to_svg(plot)
                |> apply_html_class(html_class)
