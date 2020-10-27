@@ -5,8 +5,8 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
   alias Contex.{LinePlot, PointPlot, Dataset, Plot}
 
   @impl true
-  def update(%{location: location, quantity: quantity, unit: unit, start_measured_at: start_measured_at, end_measured_at: end_measured_at, html_class: html_class} = assigns, socket) do
-    data = LocationPlotQuery.raw_data(location.id, quantity, unit, start_measured_at, end_measured_at)
+  def update(%{location: location, quantity: quantity, unit: unit, timescale: timescale, html_class: html_class} = assigns, socket) do
+    data = LocationPlotQuery.raw_data(location.id, quantity, unit, timescale)
     ds = Dataset.new(data)
     line_plot = LinePlot.new(ds)
 

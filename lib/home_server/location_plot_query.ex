@@ -4,12 +4,11 @@ defmodule HomeServer.LocationPlotQuery do
 
   alias HomeServer.SensorMeasurements.SensorMeasurement
 
-  def data_headers(location_id) do
-    end_measured_at = DateTime.now!("Etc/UTC")
-    start_measured_at = DateTime.add(end_measured_at, -3600, :second)
-    data_headers(location_id, start_measured_at, end_measured_at)
+  def data_headers(location_id, timescale \\ :hour)
+  def data_headers(location_id, timescale) when is_atom(timescale) do
+    data_headers(location_id, measured_at_range_for_timescale(timescale))
   end
-  def data_headers(location_id, start_measured_at, end_measured_at) do
+  def data_headers(location_id, {start_measured_at, end_measured_at}) do
     Repo.all(
       from sm in SensorMeasurement,
       where: sm.location_id == ^location_id,
@@ -21,7 +20,11 @@ defmodule HomeServer.LocationPlotQuery do
     ) |> Enum.map(&List.to_tuple/1)
   end
 
-  def raw_data(location_id, quantity, unit, start_measured_at, end_measured_at) do
+  def raw_data(location_id, quantity, unit, timescale \\ :hour)
+  def raw_data(location_id, quantity, unit, timescale) when is_atom(timescale) do
+    raw_data(location_id, quantity, unit, measured_at_range_for_timescale(timescale))
+  end
+  def raw_data(location_id, quantity, unit, {start_measured_at, end_measured_at}) do
     Repo.all(
       from sm in SensorMeasurement,
       where: sm.location_id == ^location_id,
@@ -33,5 +36,13 @@ defmodule HomeServer.LocationPlotQuery do
       select: [sm.measured_at, fragment("CAST(? as float)", sm.value)]
     ) |> Enum.map(&List.to_tuple/1)
   end
+
+  def measured_at_range_for_timescale(timescale \\ :hour, end_measured_at \\ DateTime.now!("Etc/UTC"))
+  def measured_at_range_for_timescale(timescale, end_measured_at) do
+    {start_measured_at_for(timescale, end_measured_at), end_measured_at}
+  end
+  def start_measured_at_for(:hour, end_measured_at), do: DateTime.add(end_measured_at, -3600,      :second)
+  def start_measured_at_for(:day,  end_measured_at), do: DateTime.add(end_measured_at, -3600*24,   :second)
+  def start_measured_at_for(:week, end_measured_at), do: DateTime.add(end_measured_at, -3600*24*7, :second)
 
 end

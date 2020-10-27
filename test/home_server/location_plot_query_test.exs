@@ -32,7 +32,7 @@ defmodule HomeServer.LocationPlotQueryTest do
     setup [:create_location_and_sensor_measurements]
 
     test "returs data tuples", %{location: location} do
-      result = LocationPlotQuery.data_headers(location.id, "2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z")
+      result = LocationPlotQuery.data_headers(location.id, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"})
       assert result == [
         {"CO2",         "ppm"},
         {"Temperature", "C"},
@@ -43,7 +43,7 @@ defmodule HomeServer.LocationPlotQueryTest do
     end
 
     test "returns raw data", %{location: location} do
-      result = LocationPlotQuery.raw_data(location.id, "Temperature", "C", "2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z")
+      result = LocationPlotQuery.raw_data(location.id, "Temperature", "C", {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"})
       assert result == [
         {~U[2020-01-01 12:01:00Z], 23.0},
         {~U[2020-01-01 12:02:00Z], 24.0},

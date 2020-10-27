@@ -13,7 +13,7 @@ defmodule HomeServerWeb.LocationLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     location = UserLocations.get_location!(id, socket.assigns.current_user)
-    plot_data_headers = LocationPlotQuery.data_headers(location.id)
+    plot_data_headers = LocationPlotQuery.data_headers(location.id, :hour)
 
     {:noreply,
      socket

@@ -22,8 +22,7 @@
     location: @location,
     quantity: quantity,
     unit: unit,
-    start_measured_at: DateTime.add(DateTime.now!("Etc/UTC"), -3600, :second),
-    end_measured_at: DateTime.now!("Etc/UTC"),
+    timescale: :hour,
     html_class: "h-72 w-128"
   %>
 <% end %>
