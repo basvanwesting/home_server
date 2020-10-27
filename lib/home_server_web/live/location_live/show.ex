@@ -6,14 +6,17 @@ defmodule HomeServerWeb.LocationLive.Show do
 
   @impl true
   def mount(_params, session, socket) do
-    socket = assign_defaults(session, socket)
+    socket =
+      assign_defaults(session, socket)
+      |> assign(:timescale, :hour)
+
     {:ok, socket}
   end
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     location = UserLocations.get_location!(id, socket.assigns.current_user)
-    plot_data_headers = LocationPlotQuery.data_headers(location.id, :hour)
+    plot_data_headers = LocationPlotQuery.data_headers(location.id, socket.assigns.timescale)
 
     {:noreply,
      socket
@@ -24,6 +27,11 @@ defmodule HomeServerWeb.LocationLive.Show do
      )
     }
   end
+
+  @impl true
+  def handle_event("timescale_hour", _, socket), do: {:noreply, assign(socket, :timescale, :hour)}
+  def handle_event("timescale_day",  _, socket), do: {:noreply, assign(socket, :timescale, :day)}
+  def handle_event("timescale_week", _, socket), do: {:noreply, assign(socket, :timescale, :week)}
 
   defp page_title(:show), do: "Show Location"
   defp page_title(:edit), do: "Edit Location"

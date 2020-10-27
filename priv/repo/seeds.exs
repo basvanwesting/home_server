@@ -28,10 +28,10 @@ HomeServer.Repo.delete_all(HomeServer.SensorMeasurements.SensorMeasurement)
 })
 
 current_time = DateTime.now!("Etc/UTC")
-for i <- 0..100 do
+for i <- 0..180 do
   {:ok, _sensor_measurement} = HomeServer.SensorMeasurements.create_sensor_measurement(%{
     location_id: location_office.id,
-    measured_at: DateTime.add(current_time, -30 * i, :second),
+    measured_at: DateTime.add(current_time, -60 * i, :second),
     quantity:    "Temperature",
     value:       :rand.normal() * 10 + 20,
     unit:        "Celsius",
@@ -40,7 +40,7 @@ for i <- 0..100 do
   })
   {:ok, _sensor_measurement} = HomeServer.SensorMeasurements.create_sensor_measurement(%{
     location_id: location_office.id,
-    measured_at: DateTime.add(current_time, -30 * i, :second),
+    measured_at: DateTime.add(current_time, -60 * i, :second),
     quantity:    "CO2",
     value:       :rand.normal() * 100 + 500,
     unit:        "ppm",

@@ -17,12 +17,18 @@
   </tr>
 </ul>
 
+<div>
+  <button phx-click="timescale_hour" class="btn btn-primary">Hour</button>
+  <button phx-click="timescale_day"  class="btn btn-primary">Day</button>
+  <button phx-click="timescale_week" class="btn btn-primary">Week</button>
+</div>
+
 <%= for {quantity, unit} <- @plot_data_headers do %>
   <%= live_component @socket, HomeServerWeb.LocationLive.PlotComponent,
     location: @location,
     quantity: quantity,
     unit: unit,
-    timescale: :hour,
+    timescale: @timescale,
     html_class: "h-72 w-128"
   %>
 <% end %>
