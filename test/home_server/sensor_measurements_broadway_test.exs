@@ -7,12 +7,34 @@ defmodule HomeServer.SensorMeasurementsBroadwayTest do
 
   describe "sensor_measurements" do
 
-    @valid_message "{\"measured_at\":\"2020-10-08T14:53:44Z\",\"quantity\":\"CO2\",\"host\":\"localhost\",\"unit\":\"ppm\",\"value\":428,\"sensor\":\"A0\"}"
-    #@invalid_message "{\"junk\":\"foobar\"}"
+    @valid_message "{\"measured_at\":\"2020-10-08T14:53:44Z\",\"quantity\":\"CO2\",\"host\":\"localhost\",\"unit\":\"ppm\",\"value\":428,\"sensor\":\"A0\",\"unknown_field\":\"ignored\"}"
+    @invalid_message "{\"junk\":\"foobar\"}"
 
     test "test valid message" do
       ref = Broadway.test_message(SensorMeasurementsBroadway, @valid_message)
-      assert_receive {:ack, ^ref, [%{data: @valid_message}], []}
+      assert_receive {:ack, ^ref, [%{status: :ok}], []}
+      #assert_receive {:ack, ^ref, [%{data: @valid_message}], []}
+    end
+
+    @tag :skip
+    test "test invalid message" do
+      ref = Broadway.test_message(SensorMeasurementsBroadway, @invalid_message)
+      assert_receive {:ack, ^ref, [], [%{status: {:failed, reason}}]}
+      assert reason == %{
+        host:        ["can't be blank"],
+        measured_at: ["can't be blank"],
+        quantity:    ["can't be blank"],
+        sensor:      ["can't be blank"],
+        unit:        ["can't be blank"],
+        value:       ["can't be blank"]
+      }
+    end
+
+    @tag :skip
+    test "test unparsable message" do
+      ref = Broadway.test_message(SensorMeasurementsBroadway, "not a map")
+      assert_receive {:ack, ^ref, [], [%{status: {:failed, reason}}]}
+      assert %Jason.DecodeError{} = reason
     end
 
     test "handle_message/3" do
