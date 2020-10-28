@@ -18,9 +18,10 @@
 </ul>
 
 <div>
-  <button phx-click="set_timescale_to_hour" class="btn <%= if @timescale == :hour, do: "btn-primary", else: "btn-cancel" %>">Hour</button>
-  <button phx-click="set_timescale_to_day"  class="btn <%= if @timescale == :day,  do: "btn-primary", else: "btn-cancel" %>">Day</button>
-  <button phx-click="set_timescale_to_week" class="btn <%= if @timescale == :week, do: "btn-primary", else: "btn-cancel" %>">Week</button>
+  <button phx-click="set_timescale_to_minute" class="btn <%= if @timescale == :minute, do: "btn-primary", else: "btn-cancel" %>">Realtime</button>
+  <button phx-click="set_timescale_to_hour"   class="btn <%= if @timescale == :hour,   do: "btn-primary", else: "btn-cancel" %>">Hour</button>
+  <button phx-click="set_timescale_to_day"    class="btn <%= if @timescale == :day,    do: "btn-primary", else: "btn-cancel" %>">Day</button>
+  <button phx-click="set_timescale_to_week"   class="btn <%= if @timescale == :week,   do: "btn-primary", else: "btn-cancel" %>">Week</button>
 </div>
 
 <%= for {quantity, unit} <- @plot_data_headers do %>
