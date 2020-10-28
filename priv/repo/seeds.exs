@@ -10,9 +10,10 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-HomeServer.Repo.delete_all(HomeServer.Accounts.User)
-HomeServer.Repo.delete_all(HomeServer.Locations.Location)
 HomeServer.Repo.delete_all(HomeServer.SensorMeasurements.SensorMeasurement)
+HomeServer.Repo.delete_all(HomeServer.Devices.Device)
+HomeServer.Repo.delete_all(HomeServer.Locations.Location)
+HomeServer.Repo.delete_all(HomeServer.Accounts.User)
 
 {:ok, admin} = HomeServer.Accounts.register_user(%{
   email: "admin@example.com",
@@ -25,6 +26,11 @@ HomeServer.Repo.delete_all(HomeServer.SensorMeasurements.SensorMeasurement)
 {:ok, location_office} = HomeServer.Locations.create_location(%{
   user_id: admin.id,
   name: "Office"
+})
+{:ok, device_localhost} = HomeServer.Devices.create_device(%{
+  identifier: "localhost",
+  user_id: admin.id,
+  location_id: location_office.id
 })
 
 current_time = DateTime.now!("Etc/UTC")

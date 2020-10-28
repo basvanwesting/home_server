@@ -2,13 +2,13 @@ defmodule HomeServer.LocationPlotQuery do
   import Ecto.Query, warn: false
   alias HomeServer.Repo
 
-  alias HomeServer.SensorMeasurements.SensorMeasurement
+  alias HomeServer.SensorMeasurements.{SensorMeasurement, SensorMeasurementKey}
 
-  def data_headers(location_id, timescale \\ :hour)
-  def data_headers(location_id, timescale) when is_atom(timescale) do
-    data_headers(location_id, measured_at_range_for_timescale(timescale))
+  def sensor_measurement_keys(location_id, timescale \\ :hour)
+  def sensor_measurement_keys(location_id, timescale) when is_atom(timescale) do
+    sensor_measurement_keys(location_id, measured_at_range_for_timescale(timescale))
   end
-  def data_headers(location_id, {start_measured_at, end_measured_at}) do
+  def sensor_measurement_keys(location_id, {start_measured_at, end_measured_at}) do
     Repo.all(
       from sm in SensorMeasurement,
       where: sm.location_id == ^location_id,
@@ -17,19 +17,19 @@ defmodule HomeServer.LocationPlotQuery do
       order_by: [asc: sm.quantity],
       distinct: true,
       select: [sm.quantity, sm.unit]
-    ) |> Enum.map(&List.to_tuple/1)
+    ) |> Enum.map(fn [quantity, unit] -> %SensorMeasurementKey{location_id: location_id, quantity: quantity, unit: unit} end)
   end
 
-  def raw_data(location_id, quantity, unit, timescale \\ :hour)
-  def raw_data(location_id, quantity, unit, timescale) when is_atom(timescale) do
-    raw_data(location_id, quantity, unit, measured_at_range_for_timescale(timescale))
+  def raw_data(sensor_measurement_key, timescale \\ :hour)
+  def raw_data(sensor_measurement_key, timescale) when is_atom(timescale) do
+    raw_data(sensor_measurement_key, measured_at_range_for_timescale(timescale))
   end
-  def raw_data(location_id, quantity, unit, {start_measured_at, end_measured_at}) do
+  def raw_data(sensor_measurement_key, {start_measured_at, end_measured_at}) do
     Repo.all(
       from sm in SensorMeasurement,
-      where: sm.location_id == ^location_id,
-      where: sm.quantity == ^quantity,
-      where: sm.unit == ^unit,
+      where: sm.location_id == ^sensor_measurement_key.location_id,
+      where: sm.quantity == ^sensor_measurement_key.quantity,
+      where: sm.unit == ^sensor_measurement_key.unit,
       where: sm.measured_at >= ^start_measured_at,
       where: sm.measured_at <= ^end_measured_at,
       order_by: [asc: sm.measured_at],

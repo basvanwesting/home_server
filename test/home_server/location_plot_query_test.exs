@@ -2,6 +2,8 @@ defmodule HomeServer.LocationPlotQueryTest do
   use HomeServer.DataCase
 
   alias HomeServer.LocationPlotQuery
+  alias HomeServer.SensorMeasurements.SensorMeasurementKey
+
   import HomeServer.SensorMeasurementsFixtures
   import HomeServer.LocationsFixtures
 
@@ -31,19 +33,20 @@ defmodule HomeServer.LocationPlotQueryTest do
   describe "data" do
     setup [:create_location_and_sensor_measurements]
 
-    test "returs data tuples", %{location: location} do
-      result = LocationPlotQuery.data_headers(location.id, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"})
+    test "returns sensor_measurement_keys", %{location: location} do
+      result = LocationPlotQuery.sensor_measurement_keys(location.id, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"})
       assert result == [
-        {"CO2",         "ppm"},
-        {"Temperature", "C"},
+        %SensorMeasurementKey{location_id: location.id, quantity: "CO2", unit: "ppm"},
+        %SensorMeasurementKey{location_id: location.id, quantity: "Temperature", unit: "C"},
       ]
 
-      result = LocationPlotQuery.data_headers(location.id)
+      result = LocationPlotQuery.sensor_measurement_keys(location.id)
       assert result == []
     end
 
     test "returns raw data", %{location: location} do
-      result = LocationPlotQuery.raw_data(location.id, "Temperature", "C", {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"})
+      sensor_measurement_key = %SensorMeasurementKey{location_id: location.id, quantity: "Temperature", unit: "C"}
+      result = LocationPlotQuery.raw_data(sensor_measurement_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"})
       assert result == [
         {~U[2020-01-01 12:01:00Z], 23.0},
         {~U[2020-01-01 12:02:00Z], 24.0},

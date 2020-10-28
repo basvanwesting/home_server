@@ -102,6 +102,10 @@ defmodule HomeServer.Locations do
     Location.changeset(location, attrs)
   end
 
+  def subscribe(location_key) do
+    Phoenix.PubSub.subscribe(HomeServer.PubSub, location_topic(location_key))
+  end
+
   def location_topic(%Location{} = location), do: location_topic(location.id)
   def location_topic(%{location_id: location_id}), do: location_topic(location_id)
   def location_topic(location_id), do: "location:" <> to_string(location_id)
