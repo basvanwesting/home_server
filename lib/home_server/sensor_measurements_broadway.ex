@@ -1,7 +1,7 @@
 defmodule HomeServer.SensorMeasurementsBroadway do
   use Broadway
 
-  alias Broadway.Message
+  #alias Broadway.Message
   alias HomeServer.SensorMeasurements
 
   def start_link(_opts) do
@@ -28,7 +28,7 @@ defmodule HomeServer.SensorMeasurementsBroadway do
          |> SensorMeasurements.create_sensor_measurement do
       {:ok, _sensor_measurement} -> message
       {:error, changeset} ->
-        reason = Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+        _reason = Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
           Enum.reduce(opts, msg, fn {key, value}, acc ->
             String.replace(acc, "%{#{key}}", to_string(value))
           end)
@@ -37,11 +37,12 @@ defmodule HomeServer.SensorMeasurementsBroadway do
         message
     end
   rescue
-    error ->
+    _error ->
       #Message.failed(message, error)
       message
   end
 
+  @impl true
   def handle_failed([message], _) do
     [message]
   end

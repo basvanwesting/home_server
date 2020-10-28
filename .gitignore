@@ -36,3 +36,4 @@ npm-debug.log
 /priv/static/
 
 .fzf-history
+/failures.txt

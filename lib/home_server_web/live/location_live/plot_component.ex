@@ -2,7 +2,7 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
   use HomeServerWeb, :live_component
 
   alias HomeServer.LocationPlotQuery
-  alias Contex.{LinePlot, PointPlot, Dataset, Plot}
+  alias Contex.{LinePlot, Dataset, Plot}
 
   #initial render
   @impl true
