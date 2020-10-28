@@ -58,5 +58,14 @@ defmodule HomeServer.LocationsTest do
       location = location_fixture()
       assert %Ecto.Changeset{} = Locations.change_location(location)
     end
+
+    test "location_topic" do
+      location = location_fixture()
+
+      assert Locations.location_topic(1)                  == "location:1"
+      assert Locations.location_topic(%{location_id: 1})  == "location:1"
+      assert Locations.location_topic(location)           == "location:#{location.id}"
+    end
+
   end
 end

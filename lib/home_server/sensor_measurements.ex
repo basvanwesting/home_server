@@ -7,6 +7,7 @@ defmodule HomeServer.SensorMeasurements do
   alias HomeServer.Repo
 
   alias HomeServer.SensorMeasurements.SensorMeasurement
+  alias HomeServer.Locations
 
   @doc """
   Returns the list of sensor_measurements.
@@ -79,7 +80,6 @@ defmodule HomeServer.SensorMeasurements do
     sensor_measurement
     |> SensorMeasurement.changeset(attrs)
     |> Repo.update()
-    #|> broadcast(:sensor_measurement_updated)
   end
 
   @doc """
@@ -96,7 +96,6 @@ defmodule HomeServer.SensorMeasurements do
   """
   def delete_sensor_measurement(%SensorMeasurement{} = sensor_measurement) do
     Repo.delete(sensor_measurement)
-    |> broadcast(:sensor_measurement_deleted)
   end
 
   @doc """
@@ -113,17 +112,23 @@ defmodule HomeServer.SensorMeasurements do
   end
 
   def subscribe() do
-    Phoenix.PubSub.subscribe(HomeServer.PubSub, "sensor_measurements")
+    Phoenix.PubSub.subscribe(HomeServer.PubSub, sensor_measurements_topic())
   end
 
   def broadcast({:ok, sensor_measurement}, name) do
     Phoenix.PubSub.broadcast(
       HomeServer.PubSub,
-      "sensor_measurements",
+      sensor_measurements_topic(),
+      {name, sensor_measurement}
+    )
+    Phoenix.PubSub.broadcast(
+      HomeServer.PubSub,
+      Locations.location_topic(sensor_measurement),
       {name, sensor_measurement}
     )
     {:ok, sensor_measurement}
   end
   def broadcast({:error, _changeset} = error, _name), do: error
 
+  def sensor_measurements_topic(), do: "sensor_measurements"
 end

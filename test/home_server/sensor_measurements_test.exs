@@ -74,5 +74,9 @@ defmodule HomeServer.SensorMeasurementsTest do
       sensor_measurement = sensor_measurement_fixture()
       assert %Ecto.Changeset{} = SensorMeasurements.change_sensor_measurement(sensor_measurement)
     end
+
+    test "sensor_measurements_topic" do
+      assert SensorMeasurements.sensor_measurements_topic() == "sensor_measurements"
+    end
   end
 end
