@@ -15,7 +15,7 @@
     <th>Name</th>
     <td><%= @location.name %></td>
   </tr>
-</ul>
+</table>
 
 <div>
   <button phx-click="set_timescale_to_minute" class="btn <%= if @timescale == :minute, do: "btn-primary", else: "btn-cancel" %>">Realtime</button>
