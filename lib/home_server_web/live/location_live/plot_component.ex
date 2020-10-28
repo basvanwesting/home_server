@@ -7,7 +7,7 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
   #initial render
   @impl true
   def update(%{sensor_measurement_key: sensor_measurement_key, timescale: timescale, html_class: html_class} = _assigns, socket) do
-    data = LocationPlotQuery.raw_data(sensor_measurement_key, timescale)
+    data = LocationPlotQuery.data(sensor_measurement_key, timescale)
     plot_svg = generate_plot_svg(sensor_measurement_key, data, html_class)
 
     {:ok,

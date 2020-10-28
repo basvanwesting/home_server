@@ -20,11 +20,12 @@ defmodule HomeServer.LocationPlotQuery do
     ) |> Enum.map(fn [quantity, unit] -> %SensorMeasurementKey{location_id: location_id, quantity: quantity, unit: unit} end)
   end
 
-  def raw_data(sensor_measurement_key, timescale \\ :hour)
-  def raw_data(sensor_measurement_key, timescale) when is_atom(timescale) do
-    raw_data(sensor_measurement_key, measured_at_range_for_timescale(timescale))
+
+  def data(sensor_measurement_key, timescale \\ :hour)
+  def data(sensor_measurement_key, timescale) when is_atom(timescale) do
+    data(sensor_measurement_key, measured_at_range_for_timescale(timescale), measured_at_resolution_for_timescale(timescale))
   end
-  def raw_data(sensor_measurement_key, {start_measured_at, end_measured_at}) do
+  def data(sensor_measurement_key, {start_measured_at, end_measured_at}, measured_at_resolution) do
     Repo.all(
       from sm in SensorMeasurement,
       where: sm.location_id == ^sensor_measurement_key.location_id,
@@ -32,9 +33,13 @@ defmodule HomeServer.LocationPlotQuery do
       where: sm.unit == ^sensor_measurement_key.unit,
       where: sm.measured_at >= ^start_measured_at,
       where: sm.measured_at <= ^end_measured_at,
-      order_by: [asc: sm.measured_at],
-      select: [sm.measured_at, fragment("CAST(ROUND(?, 1) as float)", sm.value)]
-    ) |> Enum.map(&List.to_tuple/1)
+      select: [
+        fragment("DATE_TRUNC(?, ?)::timestamptz", ^measured_at_resolution, sm.measured_at),
+        fragment("CAST(ROUND(AVG(?), 1) as float)", sm.value)
+      ],
+      group_by: 1
+    )
+    |> Enum.map(fn [measured_at, value] -> {DateTime.truncate(measured_at, :second), value} end)
   end
 
   def measured_at_range_for_timescale(timescale \\ :hour, end_measured_at \\ DateTime.now!("Etc/UTC"))
@@ -46,4 +51,8 @@ defmodule HomeServer.LocationPlotQuery do
   def start_measured_at_for(:day,    end_measured_at), do: DateTime.add(end_measured_at, -3600*24,   :second)
   def start_measured_at_for(:week,   end_measured_at), do: DateTime.add(end_measured_at, -3600*24*7, :second)
 
+  def measured_at_resolution_for_timescale(:minute), do: "second"
+  def measured_at_resolution_for_timescale(:hour),   do: "minute"
+  def measured_at_resolution_for_timescale(:day),    do: "hour"
+  def measured_at_resolution_for_timescale(:week),   do: "hour"
 end

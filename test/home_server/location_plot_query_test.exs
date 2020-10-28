@@ -12,16 +12,23 @@ defmodule HomeServer.LocationPlotQueryTest do
 
     for i <- 0..9 do
       sensor_measurement_fixture(%{
-        measured_at: "2020-01-01T12:0#{i}:00Z",
+        measured_at: "2020-01-01T12:0#{i}:0#{i}Z",
         quantity: "Temperature",
         value: 22.01234 + i,
         unit: "C",
         location_id: location_id,
       })
       sensor_measurement_fixture(%{
-        measured_at: "2020-01-01T12:0#{i}:00Z",
+        measured_at: "2020-01-01T12:0#{i}:0#{i}Z",
         quantity: "CO2",
-        value: 400.01234 + i,
+        value: 400.01234 + 2 * i,
+        unit: "ppm",
+        location_id: location_id,
+      })
+      sensor_measurement_fixture(%{
+        measured_at: "2020-01-01T12:0#{i}:3#{i}Z",
+        quantity: "CO2",
+        value: 401.01234 + 2 * i,
         unit: "ppm",
         location_id: location_id,
       })
@@ -44,19 +51,59 @@ defmodule HomeServer.LocationPlotQueryTest do
       assert result == []
     end
 
-    test "returns raw data", %{location: location} do
+    test "returns data with second resolution, Temperature", %{location: location} do
       sensor_measurement_key = %SensorMeasurementKey{location_id: location.id, quantity: "Temperature", unit: "C"}
-      result = LocationPlotQuery.raw_data(sensor_measurement_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"})
+      result = LocationPlotQuery.data(sensor_measurement_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "second")
       assert result == [
-        {~U[2020-01-01 12:01:00Z], 23.0},
-        {~U[2020-01-01 12:02:00Z], 24.0},
-        {~U[2020-01-01 12:03:00Z], 25.0},
-        {~U[2020-01-01 12:04:00Z], 26.0},
-        {~U[2020-01-01 12:05:00Z], 27.0},
-        {~U[2020-01-01 12:06:00Z], 28.0},
-        {~U[2020-01-01 12:07:00Z], 29.0},
-        {~U[2020-01-01 12:08:00Z], 30.0}
+        {~U[2020-01-01 12:01:01Z], 23.0},
+        {~U[2020-01-01 12:02:02Z], 24.0},
+        {~U[2020-01-01 12:03:03Z], 25.0},
+        {~U[2020-01-01 12:04:04Z], 26.0},
+        {~U[2020-01-01 12:05:05Z], 27.0},
+        {~U[2020-01-01 12:06:06Z], 28.0},
+        {~U[2020-01-01 12:07:07Z], 29.0},
       ]
+    end
+
+    test "returns data with second resolution, CO2", %{location: location} do
+      sensor_measurement_key = %SensorMeasurementKey{location_id: location.id, quantity: "CO2", unit: "ppm"}
+      result = LocationPlotQuery.data(sensor_measurement_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "second")
+      assert result == [
+        {~U[2020-01-01 12:01:01Z], 402.0},
+        {~U[2020-01-01 12:01:31Z], 403.0},
+        {~U[2020-01-01 12:02:02Z], 404.0},
+        {~U[2020-01-01 12:02:32Z], 405.0},
+        {~U[2020-01-01 12:03:03Z], 406.0},
+        {~U[2020-01-01 12:03:33Z], 407.0},
+        {~U[2020-01-01 12:04:04Z], 408.0},
+        {~U[2020-01-01 12:04:34Z], 409.0},
+        {~U[2020-01-01 12:05:05Z], 410.0},
+        {~U[2020-01-01 12:05:35Z], 411.0},
+        {~U[2020-01-01 12:06:06Z], 412.0},
+        {~U[2020-01-01 12:06:36Z], 413.0},
+        {~U[2020-01-01 12:07:07Z], 414.0},
+        {~U[2020-01-01 12:07:37Z], 415.0}
+      ]
+    end
+
+    test "returns data with minute resolution, CO2", %{location: location} do
+      sensor_measurement_key = %SensorMeasurementKey{location_id: location.id, quantity: "CO2", unit: "ppm"}
+      result = LocationPlotQuery.data(sensor_measurement_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "minute")
+      assert result == [
+        {~U[2020-01-01 12:01:00Z], 402.5},
+        {~U[2020-01-01 12:02:00Z], 404.5},
+        {~U[2020-01-01 12:03:00Z], 406.5},
+        {~U[2020-01-01 12:04:00Z], 408.5},
+        {~U[2020-01-01 12:05:00Z], 410.5},
+        {~U[2020-01-01 12:06:00Z], 412.5},
+        {~U[2020-01-01 12:07:00Z], 414.5}
+      ]
+    end
+
+    test "returns data with hour resolution, CO2", %{location: location} do
+      sensor_measurement_key = %SensorMeasurementKey{location_id: location.id, quantity: "CO2", unit: "ppm"}
+      result = LocationPlotQuery.data(sensor_measurement_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "hour")
+      assert result == [{~U[2020-01-01 12:00:00Z], 408.5}]
     end
   end
 end
