@@ -41,23 +41,13 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
   @impl true
   def render(assigns) do
     ~L"""
-    <div>
       <%= @plot_svg %>
-    </div>
     """
   end
 
   def generate_plot_svg(sensor_measurement_key, [], html_class) do
-    assigns = %{sensor_measurement_key: sensor_measurement_key, html_class: html_class}
-    placeholder = ~L"""
-      <svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300" class="chart <%= @html_class %>">
-        <rect fill="#ddd" width="500" height="200" x="50" y="50"/>
-        <text fill="rgba(0,0,0,0.5)" font-family="sans-serif" font-size="30" dy="10.5" font-weight="bold" x="50%" y="50%" text-anchor="middle">
-          No data for <%= @sensor_measurement_key.quantity %> (<%= @sensor_measurement_key.unit %>)
-        </text>
-      </svg>
-    """
-    {:safe, placeholder}
+    placeholder_data = [{DateTime.now!("Etc/UTC"), 0.0}]
+    generate_plot_svg(sensor_measurement_key, placeholder_data, html_class)
   end
   def generate_plot_svg(sensor_measurement_key, data, html_class) do
     ds = Dataset.new(data)
