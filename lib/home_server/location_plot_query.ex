@@ -33,7 +33,7 @@ defmodule HomeServer.LocationPlotQuery do
       where: sm.measured_at >= ^start_measured_at,
       where: sm.measured_at <= ^end_measured_at,
       order_by: [asc: sm.measured_at],
-      select: [sm.measured_at, fragment("CAST(? as float)", sm.value)]
+      select: [sm.measured_at, fragment("CAST(ROUND(?, 1) as float)", sm.value)]
     ) |> Enum.map(&List.to_tuple/1)
   end
 
