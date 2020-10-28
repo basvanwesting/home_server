@@ -44,7 +44,7 @@ defmodule HomeServerWeb.LocationLive.Show do
   def handle_info({:sensor_measurement_created, sensor_measurement}, socket) do
     sensor_measurement_key = SensorMeasurementKey.factory(sensor_measurement)
     plot_component_id = PlotComponent.plot_component_id(sensor_measurement_key)
-    send_update PlotComponent, id: plot_component_id
+    send_update PlotComponent, id: plot_component_id, sensor_measurement: sensor_measurement
     {:noreply, socket}
   end
 
