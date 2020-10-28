@@ -24,7 +24,7 @@
   <button phx-click="set_timescale_to_week"   class="btn <%= if @timescale == :week,   do: "btn-primary", else: "btn-cancel" %>">Week</button>
 </div>
 
-<div class="flex mt-4 mb-4">
+<div class="flex flex-wrap mt-4 mb-4">
   <%= for sensor_measurement_key <- @plot_sensor_measurement_keys do %>
     <div class="flex-none px-4 py-2 m-2 text-center">
       <%= live_component @socket, HomeServerWeb.LocationLive.PlotComponent,
