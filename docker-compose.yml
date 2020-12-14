@@ -6,9 +6,9 @@ services:
     build: .
     volumes:
       - .:/app
-      - dev-deps-volume:/app/deps
-      - dev-build-volume:/app/_build
-      - dev-node-modules-volume:/app/assets/node_modules
+      - dev-deps-volume:/app/deps/
+      - dev-build-volume:/app/_build/
+      - dev-node-modules-volume:/app/assets/node_modules/
     ports:
       - "4000:4000"
     depends_on:
