@@ -6,9 +6,9 @@ services:
     build: .
     volumes:
       - .:/app
-      - home-server-dev-deps-volume:/app/deps
-      - home-server-dev-build-volume:/app/_build
-      - home-server-dev-node-modules-volume:/app/assets/node_modules
+      - dev-deps-volume:/app/deps
+      - dev-build-volume:/app/_build
+      - dev-node-modules-volume:/app/assets/node_modules
     ports:
       - "4000:4000"
     depends_on:
@@ -18,7 +18,7 @@ services:
   db:
     image: postgres
     volumes:
-      - home-server-dev-db-volume:/var/lib/postgresql/data
+      - dev-db-volume:/var/lib/postgresql/data
     environment:
       - "POSTGRES_PASSWORD=example"
 
@@ -30,7 +30,7 @@ services:
 
 
 volumes:
-  home-server-dev-deps-volume:
-  home-server-dev-build-volume:
-  home-server-dev-node-modules-volume:
-  home-server-dev-db-volume:
+  dev-deps-volume:
+  dev-build-volume:
+  dev-node-modules-volume:
+  dev-db-volume:
