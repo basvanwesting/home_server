@@ -81,6 +81,9 @@ defmodule HomeServerWeb.Router do
 
     live "/sensor_measurements", SensorMeasurementLive.Index, :index
     live "/sensor_measurements/:id", SensorMeasurementLive.Show, :show
+
+    live "/sensor_measurement_aggregates", SensorMeasurementAggregateLive.Index, :index
+    live "/sensor_measurement_aggregates/:id", SensorMeasurementAggregateLive.Show, :show
   end
 
   scope "/", HomeServerWeb do

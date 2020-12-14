@@ -1,0 +1,40 @@
+<h1>Listing Sensor Measurement Aggregates</h1>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Measured at</th>
+      <th>Location Name</th>
+      <th>Resolution</th>
+      <th>Quantity</th>
+      <th>Unit</th>
+      <th>Average</th>
+      <th>Min</th>
+      <th>Max</th>
+      <th>Stddev</th>
+      <th>Count</th>
+
+      <th class="actions">Actions</th>
+    </tr>
+  </thead>
+  <tbody id="sensor_measurement_aggregates" phx-update="prepend">
+    <%= for sensor_measurement_aggregate <- @sensor_measurement_aggregates do %>
+      <tr id="sensor_measurement_aggregate-<%= sensor_measurement_aggregate.id %>">
+        <td><%= sensor_measurement_aggregate.measured_at %></td>
+        <td><%= sensor_measurement_aggregate.location.name %></td>
+        <td><%= sensor_measurement_aggregate.resolution %></td>
+        <td><%= sensor_measurement_aggregate.quantity %></td>
+        <td><%= sensor_measurement_aggregate.unit %></td>
+        <td><%= Decimal.round(sensor_measurement_aggregate.average,1) %></td>
+        <td><%= Decimal.round(sensor_measurement_aggregate.min,1) %></td>
+        <td><%= Decimal.round(sensor_measurement_aggregate.max,1) %></td>
+        <td><%= Decimal.round(sensor_measurement_aggregate.stddev,1) %></td>
+        <td><%= sensor_measurement_aggregate.count %></td>
+
+        <td class="actions">
+          <%= live_redirect "Show", to: Routes.sensor_measurement_aggregate_show_path(@socket, :show, sensor_measurement_aggregate), class: "btn btn-primary" %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

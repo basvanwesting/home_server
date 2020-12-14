@@ -1,0 +1,46 @@
+<h1>Show Sensor Measurement Aggregate</h1>
+
+<table class="table table-condensed">
+  <tr>
+    <th>Measured At</th>
+    <td><%= @sensor_measurement_aggregate.measured_at %></td>
+  </tr>
+  <tr>
+    <th>Location Name</th>
+    <td><%= @sensor_measurement_aggregate.location && @sensor_measurement_aggregate.location.name %></td>
+  </tr>
+  <tr>
+    <th>Resolution</th>
+    <td><%= @sensor_measurement_aggregate.resolution %></td>
+  </tr>
+  <tr>
+    <th>Quantity</th>
+    <td><%= @sensor_measurement_aggregate.quantity %></td>
+  </tr>
+  <tr>
+    <th>Unit</th>
+    <td><%= @sensor_measurement_aggregate.unit %></td>
+  </tr>
+  <tr>
+    <th>Average</th>
+    <td><%= @sensor_measurement_aggregate.average %></td>
+  </tr>
+  <tr>
+    <th>Min</th>
+    <td><%= @sensor_measurement_aggregate.min %></td>
+  </tr>
+  <tr>
+    <th>Max</th>
+    <td><%= @sensor_measurement_aggregate.max %></td>
+  </tr>
+  <tr>
+    <th>Stddev</th>
+    <td><%= @sensor_measurement_aggregate.stddev %></td>
+  </tr>
+  <tr>
+    <th>Count</th>
+    <td><%= @sensor_measurement_aggregate.count %></td>
+  </tr>
+</table>
+
+<%= live_redirect "Back", to: Routes.sensor_measurement_aggregate_index_path(@socket, :index), class: "btn btn-cancel" %>

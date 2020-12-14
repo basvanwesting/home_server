@@ -25,6 +25,7 @@
             <%= live_redirect "Locations", to: Routes.location_index_path(@conn, :index), class: "nav_menu_item" %>
             <%= live_redirect "Devices", to: Routes.device_index_path(@conn, :index), class: "nav_menu_item" %>
             <%= live_redirect "Sensor Measurements", to: Routes.sensor_measurement_index_path(@conn, :index), class: "nav_menu_item" %>
+            <%= live_redirect "Aggregates", to: Routes.sensor_measurement_aggregate_index_path(@conn, :index), class: "nav_menu_item" %>
           </div>
           <div>
             <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
