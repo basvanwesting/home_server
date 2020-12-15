@@ -60,7 +60,10 @@ defmodule HomeServer.SensorMeasurementAggregates do
   def create_sensor_measurement_aggregate(attrs \\ %{}) do
     %SensorMeasurementAggregate{}
     |> SensorMeasurementAggregate.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(
+      #conflict_target: :sensor_measurement_aggregates_location_id_resolution_quantity_u,
+      #on_conflict: {:replace, [:average, :min, :max, :stddev, :count]}
+    )
     |> broadcast(:sensor_measurement_aggregate_created)
   end
 

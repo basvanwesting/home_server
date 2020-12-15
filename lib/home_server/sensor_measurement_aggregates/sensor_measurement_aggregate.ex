@@ -22,6 +22,7 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
     sensor_measurement_aggregate
     |> cast(attrs, [:measured_at, :resolution, :quantity, :unit, :location_id, :average, :min, :max, :stddev, :count])
     |> foreign_key_constraint(:location_id)
+    |> unique_constraint([:location_id, :resolution, :quantity, :unit, :measured_at])
     |> validate_required([:measured_at, :resolution, :quantity, :unit, :location_id, :average, :min, :max, :stddev, :count])
   end
 end
