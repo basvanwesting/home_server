@@ -10,12 +10,12 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
       quantity: binary,
       unit: binary,
       measured_at: UtcDateTime.t(),
-      average: Decimal.t(),
-      min: Decimal.t(),
-      max: Decimal.t(),
-      stddev: Decimal.t(),
+      average: float,
+      min: float,
+      max: float,
+      stddev: float,
       count: non_neg_integer,
-      variance: Decimal.t() | nil,
+      variance: float | nil,
     }
 
   schema "sensor_measurement_aggregates" do
@@ -24,11 +24,11 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
     field :quantity, :string
     field :unit, :string
     field :measured_at, :utc_datetime
-    field :average, :decimal
-    field :min, :decimal
-    field :max, :decimal
-    field :stddev, :decimal
-    field :variance, :decimal, virtual: true
+    field :average, :float
+    field :min, :float
+    field :max, :float
+    field :stddev, :float
+    field :variance, :float, virtual: true
     field :count, :integer
   end
 

@@ -25,10 +25,10 @@
         <td><%= sensor_measurement_aggregate.resolution %></td>
         <td><%= sensor_measurement_aggregate.quantity %></td>
         <td><%= sensor_measurement_aggregate.unit %></td>
-        <td><%= Decimal.round(sensor_measurement_aggregate.average,1) %></td>
-        <td><%= Decimal.round(sensor_measurement_aggregate.min,1) %></td>
-        <td><%= Decimal.round(sensor_measurement_aggregate.max,1) %></td>
-        <td><%= Decimal.round(sensor_measurement_aggregate.stddev,1) %></td>
+        <td><%= Float.round(sensor_measurement_aggregate.average,1) %></td>
+        <td><%= Float.round(sensor_measurement_aggregate.min,1) %></td>
+        <td><%= Float.round(sensor_measurement_aggregate.max,1) %></td>
+        <td><%= Float.round(sensor_measurement_aggregate.stddev,1) %></td>
         <td><%= sensor_measurement_aggregate.count %></td>
 
         <td class="actions">

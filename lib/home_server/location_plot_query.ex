@@ -35,11 +35,11 @@ defmodule HomeServer.LocationPlotQuery do
       where: sm.measured_at <= ^end_measured_at,
       select: [
         fragment("DATE_TRUNC(?, ?)::timestamptz", ^measured_at_resolution, sm.measured_at),
-        fragment("CAST(ROUND(AVG(?), 1) as float)", sm.value)
+        fragment("AVG(?)", sm.value)
       ],
       group_by: 1
     )
-    |> Enum.map(fn [measured_at, value] -> {DateTime.truncate(measured_at, :second), value} end)
+    |> Enum.map(fn [measured_at, value] -> {DateTime.truncate(measured_at, :second), Float.round(value, 1)} end)
   end
 
   def measured_at_range_for_timescale(timescale \\ :hour, end_measured_at \\ DateTime.now!("Etc/UTC"))

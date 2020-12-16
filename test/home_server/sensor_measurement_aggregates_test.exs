@@ -57,7 +57,7 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
       assert sensor_measurement_aggregate.measured_at == DateTime.from_naive!(~N[2011-05-18T15:01:01Z], "Etc/UTC")
       assert sensor_measurement_aggregate.quantity == "some updated quantity"
       assert sensor_measurement_aggregate.unit == "some updated unit"
-      assert sensor_measurement_aggregate.average == Decimal.new("10.1")
+      assert sensor_measurement_aggregate.average == 10.1
     end
 
     test "update_sensor_measurement_aggregate/2 with invalid data returns error changeset", %{sensor_measurement_aggregate: sensor_measurement_aggregate} do

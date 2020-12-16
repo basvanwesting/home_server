@@ -47,7 +47,7 @@ defmodule HomeServer.SensorMeasurementsBroadwayTest do
       assert sensor_measurement.sensor      == "A0"
       assert sensor_measurement.quantity    == "CO2"
       assert sensor_measurement.unit        == "ppm"
-      assert sensor_measurement.value       == Decimal.new("428")
+      assert sensor_measurement.value       == 428
     end
   end
 

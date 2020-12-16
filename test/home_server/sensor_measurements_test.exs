@@ -30,7 +30,7 @@ defmodule HomeServer.SensorMeasurementsTest do
       assert sensor_measurement.sensor == "some sensor"
       assert sensor_measurement.quantity == "some quantity"
       assert sensor_measurement.unit == "some unit"
-      assert sensor_measurement.value == Decimal.new("120.5")
+      assert sensor_measurement.value == 120.5
       assert sensor_measurement.location_id == nil
     end
 
@@ -55,7 +55,7 @@ defmodule HomeServer.SensorMeasurementsTest do
       assert sensor_measurement.sensor == "some updated sensor"
       assert sensor_measurement.quantity == "some updated quantity"
       assert sensor_measurement.unit == "some updated unit"
-      assert sensor_measurement.value == Decimal.new("456.7")
+      assert sensor_measurement.value == 456.7
     end
 
     test "update_sensor_measurement/2 with invalid data returns error changeset" do

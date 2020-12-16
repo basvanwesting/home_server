@@ -10,7 +10,7 @@ defmodule HomeServer.SensorMeasurements.SensorMeasurement do
       sensor: binary | nil,
       measured_at: UtcDateTime.t() | nil,
       quantity: binary | nil,
-      value: Decimal.t() | nil,
+      value: float | nil,
       unit: binary | nil,
       location_id: non_neg_integer | nil,
     }
@@ -20,7 +20,7 @@ defmodule HomeServer.SensorMeasurements.SensorMeasurement do
     field :sensor, :string
     field :measured_at, :utc_datetime
     field :quantity, :string
-    field :value, :decimal
+    field :value, :float
     field :unit, :string
     belongs_to :location, Location
   end

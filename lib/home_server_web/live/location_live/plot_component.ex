@@ -23,7 +23,7 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
 
   # appended render
   def update(%{sensor_measurement: sensor_measurement} = _assigns, socket) do
-    data = socket.assigns.data ++ [{sensor_measurement.measured_at, Decimal.to_float(sensor_measurement.value)}]
+    data = socket.assigns.data ++ [{sensor_measurement.measured_at, sensor_measurement.value}]
     plot_svg = generate_plot_svg(
       socket.assigns.sensor_measurement_key,
       data,

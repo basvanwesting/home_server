@@ -3,9 +3,9 @@ defmodule HomeServer.SensorMeasurementAggregator do
   @type sensor_measurement_aggregate_list :: [SensorMeasurement.t()]
 
   import Ecto.Query, warn: false
-  alias HomeServer.Repo
+  #alias HomeServer.Repo
 
-  alias HomeServer.SensorMeasurements.SensorMeasurement
+  #alias HomeServer.SensorMeasurements.SensorMeasurement
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateKey
   alias HomeServer.SensorMeasurementAggregates
@@ -36,8 +36,8 @@ defmodule HomeServer.SensorMeasurementAggregator do
           average:     sensor_measurement.value,
           min:         sensor_measurement.value,
           max:         sensor_measurement.value,
-          stddev:      Decimal.new("0"),
-          variance:    Decimal.new("0"),
+          stddev:      0.0,
+          variance:    0.0,
           count:       1,
         }
       )
@@ -51,24 +51,18 @@ defmodule HomeServer.SensorMeasurementAggregator do
   end
 
   def append_sensor_measurement_aggregate(aggregate, sensor_measurement) do
-    average = Decimal.add(aggregate.average, Decimal.div(Decimal.sub(sensor_measurement.value, aggregate.average), aggregate.count))
-    variance = Decimal.add(aggregate.variance, Decimal.mult(Decimal.sub(sensor_measurement.value, aggregate.average), Decimal.sub(sensor_measurement.value, average)))
-    min = Decimal.min(aggregate.min, sensor_measurement.value)
-    max = Decimal.max(aggregate.max, sensor_measurement.value)
+    average = aggregate.average + (sensor_measurement.value - aggregate.average) / aggregate.count
+    variance = aggregate.variance + (sensor_measurement.value - aggregate.average) * (sensor_measurement.value - average)
+    min = min(aggregate.min, sensor_measurement.value)
+    max = max(aggregate.max, sensor_measurement.value)
     count = aggregate.count + 1
-
-    #average = aggregate.average + (sensor_measurement.value - aggregate.average) / aggregate.count
-    #variance = aggregate.variance + (sensor_measurement.value - aggregate.average) * (sensor_measurement.value - average)
-    #min = min(aggregate.min, sensor_measurement.value)
-    #max = max(aggregate.max, sensor_measurement.value)
-    #count = aggregate.count + 1
 
     %{aggregate | average: average, min: min, max: max, variance: variance, count: count}
   end
 
   def set_variance(nil), do: nil
   def set_variance(aggregate) do
-    variance = Decimal.mult(Decimal.mult(aggregate.stddev, aggregate.stddev), aggregate.count - 1)
+    variance = aggregate.stddev * aggregate.stddev * (aggregate.count - 1)
     %{aggregate | variance: variance}
   end
 
@@ -77,7 +71,7 @@ defmodule HomeServer.SensorMeasurementAggregator do
     %{aggregate | stddev: 0}
   end
   def set_stddev(%{count: count} = aggregate) when count > 1 do
-    stddev = Decimal.sqrt(Decimal.div(aggregate.variance, aggregate.count - 1))
+    stddev = :math.sqrt(aggregate.variance / (aggregate.count - 1))
     %{aggregate | stddev: stddev}
   end
 
