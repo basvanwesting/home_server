@@ -4,6 +4,20 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
 
   alias HomeServer.Locations.Location
 
+  @type t :: %__MODULE__{
+      location_id: non_neg_integer,
+      resolution: binary,
+      quantity: binary,
+      unit: binary,
+      measured_at: UtcDateTime.t(),
+      average: Decimal.t(),
+      min: Decimal.t(),
+      max: Decimal.t(),
+      stddev: Decimal.t(),
+      count: non_neg_integer,
+      variance: Decimal.t() | nil,
+    }
+
   schema "sensor_measurement_aggregates" do
     belongs_to :location, Location
     field :resolution, :string
@@ -14,6 +28,7 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
     field :min, :decimal
     field :max, :decimal
     field :stddev, :decimal
+    field :variance, :decimal, virtual: true
     field :count, :integer
   end
 

@@ -1,4 +1,10 @@
 defmodule HomeServer.SensorMeasurements.SensorMeasurementKey do
+  @type t :: %__MODULE__{
+      location_id: non_neg_integer,
+      quantity: binary,
+      unit: binary,
+    }
+
   @enforce_keys [:location_id, :quantity, :unit]
   defstruct     [:location_id, :quantity, :unit]
 

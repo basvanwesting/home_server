@@ -7,6 +7,7 @@ defmodule HomeServer.SensorMeasurementAggregates do
   alias HomeServer.Repo
 
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
+  alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateKey
   alias HomeServer.Locations
 
   @doc """
@@ -44,6 +45,13 @@ defmodule HomeServer.SensorMeasurementAggregates do
 
   """
   def get_sensor_measurement_aggregate!(id), do: Repo.get!(SensorMeasurementAggregate, id)
+
+  def get_sensor_measurement_aggregate_by_key(%SensorMeasurementAggregateKey{} = key) do
+    Repo.get_by(
+      SensorMeasurementAggregate,
+      Map.take(key, SensorMeasurementAggregateKey.attribute_list())
+    )
+  end
 
   @doc """
   Creates a sensor_measurement_aggregate.

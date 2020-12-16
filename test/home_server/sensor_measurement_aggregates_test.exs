@@ -2,6 +2,7 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
   use HomeServer.DataCase
 
   alias HomeServer.SensorMeasurementAggregates
+  alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateKey
   import HomeServer.SensorMeasurementAggregatesFixtures
   import HomeServer.LocationsFixtures
 
@@ -25,6 +26,26 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
 
     test "get_sensor_measurement_aggregate!/1 returns the sensor_measurement_aggregate with given id", %{sensor_measurement_aggregate: sensor_measurement_aggregate} do
       assert SensorMeasurementAggregates.get_sensor_measurement_aggregate!(sensor_measurement_aggregate.id) == sensor_measurement_aggregate
+    end
+
+    test "get_sensor_measurement_aggregate_by_key/1 returns the sensor_measurement_aggregate with given key", %{location_id: location_id, sensor_measurement_aggregate: sensor_measurement_aggregate} do
+      assert SensorMeasurementAggregates.get_sensor_measurement_aggregate_by_key(%SensorMeasurementAggregateKey{
+        location_id: location_id,
+        resolution: "hour",
+        quantity: "Temperature",
+        unit: "Celsius",
+        measured_at: sensor_measurement_aggregate.measured_at
+      }) == sensor_measurement_aggregate
+    end
+
+    test "get_sensor_measurement_aggregate_by_key/1 returns nil with non existing key", %{location_id: location_id, sensor_measurement_aggregate: sensor_measurement_aggregate} do
+      assert SensorMeasurementAggregates.get_sensor_measurement_aggregate_by_key(%SensorMeasurementAggregateKey{
+        location_id: location_id,
+        resolution: "hour",
+        quantity: "CO2",
+        unit: "Celsius",
+        measured_at: sensor_measurement_aggregate.measured_at
+      }) == nil
     end
 
     test "create_sensor_measurement_aggregate/1 with invalid data returns error changeset" do

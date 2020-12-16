@@ -5,6 +5,16 @@ defmodule HomeServer.SensorMeasurements.SensorMeasurement do
   alias HomeServer.Locations.Location
   alias HomeServer.Devices
 
+  @type t :: %__MODULE__{
+      host: binary | nil,
+      sensor: binary | nil,
+      measured_at: UtcDateTime.t() | nil,
+      quantity: binary | nil,
+      value: Decimal.t() | nil,
+      unit: binary | nil,
+      location_id: non_neg_integer | nil,
+    }
+
   schema "sensor_measurements" do
     field :host, :string
     field :sensor, :string
