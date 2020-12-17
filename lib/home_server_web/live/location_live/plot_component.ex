@@ -6,14 +6,14 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
 
   #initial render
   @impl true
-  def update(%{sensor_measurement_series_key: sensor_measurement_series_key, timescale: timescale, html_class: html_class} = _assigns, socket) do
-    data = LocationPlotQuery.data(sensor_measurement_series_key, timescale)
-    plot_svg = generate_plot_svg(sensor_measurement_series_key, data, html_class)
+  def update(%{plot_key: plot_key, timescale: timescale, html_class: html_class} = _assigns, socket) do
+    data = LocationPlotQuery.data(plot_key, timescale)
+    plot_svg = generate_plot_svg(plot_key, data, html_class)
 
     {:ok,
      socket
      |> assign(
-       sensor_measurement_series_key: sensor_measurement_series_key,
+       plot_key: plot_key,
        timescale: timescale,
        html_class: html_class,
        data: data,
@@ -25,7 +25,7 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
   def update(%{sensor_measurement: sensor_measurement} = _assigns, socket) do
     data = socket.assigns.data ++ [{sensor_measurement.measured_at, sensor_measurement.value}]
     plot_svg = generate_plot_svg(
-      socket.assigns.sensor_measurement_series_key,
+      socket.assigns.plot_key,
       data,
       socket.assigns.html_class
     )
@@ -45,17 +45,17 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
     """
   end
 
-  def generate_plot_svg(sensor_measurement_series_key, [], html_class) do
+  def generate_plot_svg(plot_key, [], html_class) do
     placeholder_data = [{DateTime.now!("Etc/UTC"), 0.0}]
-    generate_plot_svg(sensor_measurement_series_key, placeholder_data, html_class)
+    generate_plot_svg(plot_key, placeholder_data, html_class)
   end
-  def generate_plot_svg(sensor_measurement_series_key, data, html_class) do
+  def generate_plot_svg(plot_key, data, html_class) do
     ds = Dataset.new(data)
     line_plot = LinePlot.new(ds)
 
     plot = Plot.new(600, 300, line_plot)
      #|> Plot.plot_options(%{legend_setting: :legend_right})
-     |> Plot.titles(sensor_measurement_series_key.quantity, sensor_measurement_series_key.unit)
+     |> Plot.titles(plot_key.quantity, plot_key.unit)
 
     Plot.to_svg(plot)
     |> apply_html_class(html_class)
@@ -69,12 +69,12 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
     {:safe, [head, middle | tail]}
   end
 
-  def plot_component_id(sensor_measurement_series_key) do
+  def plot_component_id(plot_key) do
     [
       "PlotComponent",
-      sensor_measurement_series_key.location_id,
-      sensor_measurement_series_key.quantity,
-      sensor_measurement_series_key.unit,
+      plot_key.location_id,
+      plot_key.quantity,
+      plot_key.unit,
     ] |> Enum.join("_")
   end
 end

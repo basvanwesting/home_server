@@ -25,11 +25,11 @@
 </div>
 
 <div class="flex flex-wrap mt-4 mb-4">
-  <%= for sensor_measurement_series_key <- @plot_sensor_measurement_series_keys do %>
+  <%= for plot_key <- @plot_keys do %>
     <div class="flex-none px-4 py-2 m-2 text-center">
       <%= live_component @socket, HomeServerWeb.LocationLive.PlotComponent,
-        id: HomeServerWeb.LocationLive.PlotComponent.plot_component_id(sensor_measurement_series_key),
-        sensor_measurement_series_key: sensor_measurement_series_key,
+        id: HomeServerWeb.LocationLive.PlotComponent.plot_component_id(plot_key),
+        plot_key: plot_key,
         timescale: @timescale,
         html_class: "h-72 w-128"
       %>

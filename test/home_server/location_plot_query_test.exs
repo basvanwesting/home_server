@@ -40,20 +40,20 @@ defmodule HomeServer.LocationPlotQueryTest do
   describe "data" do
     setup [:create_location_and_sensor_measurements]
 
-    test "returns sensor_measurement_series_keys", %{location: location} do
-      result = LocationPlotQuery.sensor_measurement_series_keys(location.id, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"})
+    test "returns plot_keys", %{location: location} do
+      result = LocationPlotQuery.plot_keys(location.id, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"})
       assert result == [
         %SensorMeasurementSeriesKey{location_id: location.id, quantity: "CO2", unit: "ppm"},
         %SensorMeasurementSeriesKey{location_id: location.id, quantity: "Temperature", unit: "C"},
       ]
 
-      result = LocationPlotQuery.sensor_measurement_series_keys(location.id)
+      result = LocationPlotQuery.plot_keys(location.id)
       assert result == []
     end
 
     test "returns data with second resolution, Temperature", %{location: location} do
-      sensor_measurement_series_key = %SensorMeasurementSeriesKey{location_id: location.id, quantity: "Temperature", unit: "C"}
-      result = LocationPlotQuery.data(sensor_measurement_series_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "second")
+      plot_key = %SensorMeasurementSeriesKey{location_id: location.id, quantity: "Temperature", unit: "C"}
+      result = LocationPlotQuery.data(plot_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "second")
       assert result == [
         {~U[2020-01-01 12:01:01Z], 23.0},
         {~U[2020-01-01 12:02:02Z], 24.0},
@@ -66,8 +66,8 @@ defmodule HomeServer.LocationPlotQueryTest do
     end
 
     test "returns data with second resolution, CO2", %{location: location} do
-      sensor_measurement_series_key = %SensorMeasurementSeriesKey{location_id: location.id, quantity: "CO2", unit: "ppm"}
-      result = LocationPlotQuery.data(sensor_measurement_series_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "second")
+      plot_key = %SensorMeasurementSeriesKey{location_id: location.id, quantity: "CO2", unit: "ppm"}
+      result = LocationPlotQuery.data(plot_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "second")
       assert result == [
         {~U[2020-01-01 12:01:01Z], 402.0},
         {~U[2020-01-01 12:01:31Z], 403.0},
@@ -87,8 +87,8 @@ defmodule HomeServer.LocationPlotQueryTest do
     end
 
     test "returns data with minute resolution, CO2", %{location: location} do
-      sensor_measurement_series_key = %SensorMeasurementSeriesKey{location_id: location.id, quantity: "CO2", unit: "ppm"}
-      result = LocationPlotQuery.data(sensor_measurement_series_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "minute")
+      plot_key = %SensorMeasurementSeriesKey{location_id: location.id, quantity: "CO2", unit: "ppm"}
+      result = LocationPlotQuery.data(plot_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "minute")
       assert result == [
         {~U[2020-01-01 12:01:00Z], 402.5},
         {~U[2020-01-01 12:02:00Z], 404.5},
@@ -101,8 +101,8 @@ defmodule HomeServer.LocationPlotQueryTest do
     end
 
     test "returns data with hour resolution, CO2", %{location: location} do
-      sensor_measurement_series_key = %SensorMeasurementSeriesKey{location_id: location.id, quantity: "CO2", unit: "ppm"}
-      result = LocationPlotQuery.data(sensor_measurement_series_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "hour")
+      plot_key = %SensorMeasurementSeriesKey{location_id: location.id, quantity: "CO2", unit: "ppm"}
+      result = LocationPlotQuery.data(plot_key, {"2020-01-01T12:01:00Z", "2020-01-01T12:08:00Z"}, "hour")
       assert result == [{~U[2020-01-01 12:00:00Z], 408.5}]
     end
   end
