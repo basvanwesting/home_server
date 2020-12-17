@@ -1,7 +1,8 @@
 defmodule HomeServer.SensorMeasurementAggregator do
   @type sensor_measurement_list :: [SensorMeasurement.t()]
-  @type sensor_measurement_aggregate_list :: [SensorMeasurementAggregate.t()]
   @type aggregate_payload_tuples :: [{SensorMeasurementAggregate.t(), Payload.t()}]
+
+  @resolutions ["minute", "hour", "day"]
 
   alias Ecto.Multi
   alias HomeServer.Repo
@@ -28,16 +29,22 @@ defmodule HomeServer.SensorMeasurementAggregator do
     def attribute_list, do: @attributes
   end
 
-  @spec process(sensor_measurement_list, binary) :: :ok | {:error, binary}
-  def process(sensor_measurements, resolution) do
+  @spec process(sensor_measurement_list) :: {:ok, any} | {:error, any}
+  def process(sensor_measurements) do
     sensor_measurements
-    |> build(resolution)
+    |> build()
     |> persist()
-
-    :ok
   end
 
-  @spec build(sensor_measurement_list, binary) :: sensor_measurement_aggregate_list
+  @spec build(sensor_measurement_list) :: aggregate_payload_tuples
+  def build(sensor_measurements) do
+    for resolution <- @resolutions do
+      build(sensor_measurements, resolution)
+    end
+    |> List.flatten()
+  end
+
+  @spec build(sensor_measurement_list, binary) :: aggregate_payload_tuples
   def build(sensor_measurements, resolution) do
     sensor_measurements
     |> Enum.reduce(%{}, fn (sensor_measurement, acc) ->
