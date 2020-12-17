@@ -24,6 +24,8 @@ defmodule HomeServer.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import HomeServer.DataCase
+
+      import Assertions
     end
   end
 

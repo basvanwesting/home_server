@@ -6,6 +6,7 @@ defmodule HomeServer.SensorMeasurementAggregator do
 
   alias Ecto.Multi
   alias HomeServer.Repo
+  import Ecto.Query, only: [where: 3]
 
   alias HomeServer.SensorMeasurements.SensorMeasurement
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
@@ -29,8 +30,23 @@ defmodule HomeServer.SensorMeasurementAggregator do
     def attribute_list, do: @attributes
   end
 
-  @spec process_batch(sensor_measurement_list) :: {:ok, any} | {:error, any}
+  @spec process(integer) :: {:ok, any} | {:error, any}
+  def process(batch_size \\ 1000) do
+
+    Repo.transaction(fn ->
+      SensorMeasurement
+      |> where([s], s.aggregated == false)
+      |> Repo.stream()
+      |> Stream.chunk_every(batch_size)
+      |> Stream.each(&process_batch/1)
+      |> Stream.run()
+    end)
+  end
+
+  @spec process_batch(sensor_measurement_list) :: {:ok, any} | {:error, any} | {:done}
+  def process_batch([]), do: {:done}
   def process_batch(sensor_measurements) do
+    IO.inspect("### PROCESS_BATCH ###")
     aggregate_payload_tuples = build_aggregates(sensor_measurements)
 
     Multi.new()
@@ -79,6 +95,7 @@ defmodule HomeServer.SensorMeasurementAggregator do
 
   @spec persist_aggregates(Multi.t(), aggregate_payload_tuples) :: Multi.t()
   def persist_aggregates(multi, aggregate_payload_tuples) do
+    IO.inspect("### PERSIST_AGGREGATES ###")
     Enum.reduce(aggregate_payload_tuples, multi, fn {aggregate, payload}, acc ->
       key = SensorMeasurementAggregateKey.factory(aggregate)
       changeset = SensorMeasurementAggregate.changeset(aggregate, Map.from_struct(payload))
@@ -88,10 +105,18 @@ defmodule HomeServer.SensorMeasurementAggregator do
 
   @spec mark_sensor_measurements(Multi.t(), sensor_measurement_list) :: Multi.t()
   def mark_sensor_measurements(multi, sensor_measurements) do
-    Enum.reduce(sensor_measurements, multi, fn sensor_measurement, acc ->
-      changeset = SensorMeasurement.changeset(sensor_measurement, %{aggregated: true})
-      Multi.update(acc, sensor_measurement, changeset)
-    end)
+    IO.inspect("### MARK_SENSOR_MEASUREMENTS ###")
+    sensor_measurement_ids = Enum.map(sensor_measurements, &(&1.id))
+    Multi.update_all(
+      multi,
+      :mark_sensor_measurements,
+      SensorMeasurement |> where([s], s.id in ^sensor_measurement_ids),
+      set: [aggregated: true]
+    )
+    #Enum.reduce(sensor_measurements, multi, fn sensor_measurement, acc ->
+      #changeset = SensorMeasurement.changeset(sensor_measurement, %{aggregated: true})
+      #Multi.update(acc, sensor_measurement, changeset)
+    #end)
   end
 
   def load_sensor_measurement_aggregate(sensor_measurement_aggregate_key) do

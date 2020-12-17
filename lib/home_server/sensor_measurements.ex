@@ -29,6 +29,20 @@ defmodule HomeServer.SensorMeasurements do
     Repo.all(SensorMeasurement)
   end
 
+  def sensor_measurements_stream(aggregated \\ false, max_rows \\ 500) do
+    SensorMeasurement
+    |> where([s], s.aggregated == ^aggregated)
+    |> Repo.stream(max_rows: max_rows)
+  end
+
+  def list_unaggregated_sensor_measurements(limit: limit) when limit > 0 do
+    SensorMeasurement
+    |> limit(^limit)
+    |> where([s], s.aggregated == false)
+    |> order_by(desc: :measured_at)
+    |> Repo.all
+  end
+
   @doc """
   Gets a single sensor_measurement.
 
