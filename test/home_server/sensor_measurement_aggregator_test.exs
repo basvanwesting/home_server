@@ -75,80 +75,11 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
     })
   end
 
-  describe "build_aggregates, with and without existing aggregates" do
+  describe "process, with and without existing aggregates" do
     setup [:create_sensor_measurements, :create_sensor_measurement_aggregates]
-    test "build_aggregates new aggregates for resolution minute", %{sensor_measurements: sensor_measurements} do
-      data = for {aggregate, payload} <- SensorMeasurementAggregator.build_aggregates(sensor_measurements, "minute") do
-        %{
-          resolution: aggregate.resolution,
-          measured_at: aggregate.measured_at,
-          average:     payload.average,
-          count:       payload.count,
-          max:         payload.max,
-          min:         payload.min,
-          stddev:      Float.round(payload.stddev, 6),
-        }
-      end
-
-      assert_lists_equal data, [
-        %{average: 400.0, count: 1, max: 400.0, measured_at: ~U[2020-01-01 11:12:00Z], min: 400.0, resolution: "minute", stddev: 0.0},
-        %{average: 403.0, count: 4, max: 406.0, measured_at: ~U[2020-01-01 13:00:00Z], min: 400.0, resolution: "minute", stddev: 2.581989},
-        %{average: 424.0, count: 6, max: 480.0, measured_at: ~U[2020-01-01 13:01:00Z], min: 408.0, resolution: "minute", stddev: 22.126907},
-        %{average: 417.0, count: 2, max: 418.0, measured_at: ~U[2020-01-01 13:02:00Z], min: 416.0, resolution: "minute", stddev: 1.414214}
-      ]
-    end
-
-    test "build_aggregates new aggregates for resolution hour", %{sensor_measurements: sensor_measurements} do
-      data = for {aggregate, payload} <- SensorMeasurementAggregator.build_aggregates(sensor_measurements, "hour") do
-        %{
-          resolution: aggregate.resolution,
-          measured_at: aggregate.measured_at,
-          average:     payload.average,
-          count:       payload.count,
-          max:         payload.max,
-          min:         payload.min,
-          stddev:      Float.round(payload.stddev, 6),
-        }
-      end
-
-      assert_lists_equal data, [
-        %{average: 400.0, count: 1, max: 400.0, measured_at: ~U[2020-01-01 11:00:00Z], min: 400.0, resolution: "hour", stddev: 0.0},
-        %{average: 409.0, count: 10, max: 418.0, measured_at: ~U[2020-01-01 13:00:00Z], min: 400.0, resolution: "hour", stddev: 6.055301}
-      ]
-    end
-
-    test "process_batch new aggregates", %{sensor_measurements: sensor_measurements} do
-      {:ok, _} = SensorMeasurementAggregator.process_batch(sensor_measurements)
-
-      data = for aggregate <- SensorMeasurementAggregates.list_sensor_measurement_aggregates() do
-        aggregate
-        |> Map.take([:resolution, :measured_at, :average, :min, :max, :stddev, :count])
-        |> Map.update!(:average, &(Float.round(&1,1)))
-        |> Map.update!(:stddev, &(Float.round(&1,6)))
-      end
-
-      assert_lists_equal data, [
-        %{average: 450.0, count: 2, max: 480.0, measured_at: ~U[2020-01-01 09:00:00Z], min: 440.0, resolution: "hour", stddev: 20.0},
-        %{average: 400.0, count: 1, max: 400.0, measured_at: ~U[2020-01-01 11:12:00Z], min: 400.0, resolution: "minute", stddev: 0.0},
-        %{average: 403.0, count: 4, max: 406.0, measured_at: ~U[2020-01-01 13:00:00Z], min: 400.0, resolution: "minute", stddev: 2.581989},
-        %{average: 424.0, count: 6, max: 480.0, measured_at: ~U[2020-01-01 13:01:00Z], min: 408.0, resolution: "minute", stddev: 22.126907},
-        %{average: 417.0, count: 2, max: 418.0, measured_at: ~U[2020-01-01 13:02:00Z], min: 416.0, resolution: "minute", stddev: 1.414214},
-        %{average: 400.0, count: 1, max: 400.0, measured_at: ~U[2020-01-01 11:00:00Z], min: 400.0, resolution: "hour", stddev: 0.0},
-        %{average: 409.0, count: 10, max: 418.0, measured_at: ~U[2020-01-01 13:00:00Z], min: 400.0, resolution: "hour", stddev: 6.055301},
-        %{average: 408.2, count: 11, max: 418.0, measured_at: ~U[2020-01-01 12:00:00Z], min: 400.0, resolution: "day", stddev: 6.353238}
-      ]
-
-      query = from s in SensorMeasurement,
-        distinct: true,
-        select: s.aggregated
-
-      assert Repo.all(query) == [true]
-    end
 
     test "process unaggregated sensor measurements" do
-      IO.inspect("### START ###")
-      result = SensorMeasurementAggregator.process(4)
-      IO.inspect("### END ###")
+      SensorMeasurementAggregator.process()
 
       data = for aggregate <- SensorMeasurementAggregates.list_sensor_measurement_aggregates() do
         aggregate

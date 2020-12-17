@@ -2,7 +2,6 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias HomeServer.SensorMeasurements.SensorMeasurement
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateKey
   alias HomeServer.Locations.Location
 

@@ -5,7 +5,6 @@ defmodule HomeServer.DevicesFixtures do
   """
 
   alias HomeServer.Devices
-  import HomeServer.AccountsFixtures
 
   def device_fixture(attrs \\ %{}) do
     {:ok, device} =
