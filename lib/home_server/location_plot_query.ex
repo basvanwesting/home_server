@@ -2,13 +2,13 @@ defmodule HomeServer.LocationPlotQuery do
   import Ecto.Query, warn: false
   alias HomeServer.Repo
 
-  alias HomeServer.SensorMeasurements.{SensorMeasurement, SensorMeasurementKey}
+  alias HomeServer.SensorMeasurements.{SensorMeasurement, SensorMeasurementSeriesKey}
 
-  def sensor_measurement_keys(location_id, timescale \\ :hour)
-  def sensor_measurement_keys(location_id, timescale) when is_atom(timescale) do
-    sensor_measurement_keys(location_id, measured_at_range_for_timescale(timescale))
+  def sensor_measurement_series_keys(location_id, timescale \\ :hour)
+  def sensor_measurement_series_keys(location_id, timescale) when is_atom(timescale) do
+    sensor_measurement_series_keys(location_id, measured_at_range_for_timescale(timescale))
   end
-  def sensor_measurement_keys(location_id, {start_measured_at, end_measured_at}) do
+  def sensor_measurement_series_keys(location_id, {start_measured_at, end_measured_at}) do
     Repo.all(
       from sm in SensorMeasurement,
       where: sm.location_id == ^location_id,
@@ -17,20 +17,20 @@ defmodule HomeServer.LocationPlotQuery do
       order_by: [asc: sm.quantity],
       distinct: true,
       select: [sm.quantity, sm.unit]
-    ) |> Enum.map(fn [quantity, unit] -> %SensorMeasurementKey{location_id: location_id, quantity: quantity, unit: unit} end)
+    ) |> Enum.map(fn [quantity, unit] -> %SensorMeasurementSeriesKey{location_id: location_id, quantity: quantity, unit: unit} end)
   end
 
 
-  def data(sensor_measurement_key, timescale \\ :hour)
-  def data(sensor_measurement_key, timescale) when is_atom(timescale) do
-    data(sensor_measurement_key, measured_at_range_for_timescale(timescale), measured_at_resolution_for_timescale(timescale))
+  def data(sensor_measurement_series_key, timescale \\ :hour)
+  def data(sensor_measurement_series_key, timescale) when is_atom(timescale) do
+    data(sensor_measurement_series_key, measured_at_range_for_timescale(timescale), measured_at_resolution_for_timescale(timescale))
   end
-  def data(sensor_measurement_key, {start_measured_at, end_measured_at}, measured_at_resolution) do
+  def data(sensor_measurement_series_key, {start_measured_at, end_measured_at}, measured_at_resolution) do
     Repo.all(
       from sm in SensorMeasurement,
-      where: sm.location_id == ^sensor_measurement_key.location_id,
-      where: sm.quantity == ^sensor_measurement_key.quantity,
-      where: sm.unit == ^sensor_measurement_key.unit,
+      where: sm.location_id == ^sensor_measurement_series_key.location_id,
+      where: sm.quantity == ^sensor_measurement_series_key.quantity,
+      where: sm.unit == ^sensor_measurement_series_key.unit,
       where: sm.measured_at >= ^start_measured_at,
       where: sm.measured_at <= ^end_measured_at,
       select: [

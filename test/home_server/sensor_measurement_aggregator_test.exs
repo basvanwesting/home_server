@@ -2,7 +2,7 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
   use HomeServer.DataCase
 
   alias HomeServer.SensorMeasurementAggregator
-  #alias HomeServer.SensorMeasurements.SensorMeasurementKey
+  #alias HomeServer.SensorMeasurements.SensorMeasurementSeriesKey
   #alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
 
   import HomeServer.SensorMeasurementsFixtures

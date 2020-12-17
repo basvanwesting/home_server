@@ -1,4 +1,4 @@
-defmodule HomeServer.SensorMeasurements.SensorMeasurementKey do
+defmodule HomeServer.SensorMeasurements.SensorMeasurementSeriesKey do
   @type t :: %__MODULE__{
       location_id: non_neg_integer,
       quantity: binary,

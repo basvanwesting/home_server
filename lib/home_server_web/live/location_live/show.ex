@@ -4,7 +4,7 @@ defmodule HomeServerWeb.LocationLive.Show do
   alias HomeServer.UserLocations
   alias HomeServer.Locations
   alias HomeServer.LocationPlotQuery
-  alias HomeServer.SensorMeasurements.SensorMeasurementKey
+  alias HomeServer.SensorMeasurements.SensorMeasurementSeriesKey
   alias HomeServerWeb.LocationLive.PlotComponent
 
   @impl true
@@ -22,14 +22,14 @@ defmodule HomeServerWeb.LocationLive.Show do
     location = UserLocations.get_location!(id, socket.assigns.current_user)
     if connected?(socket), do: Locations.subscribe(location)
 
-    plot_sensor_measurement_keys = LocationPlotQuery.sensor_measurement_keys(location.id, socket.assigns.timescale)
+    plot_sensor_measurement_series_keys = LocationPlotQuery.sensor_measurement_series_keys(location.id, socket.assigns.timescale)
 
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(
        location: location,
-       plot_sensor_measurement_keys: plot_sensor_measurement_keys
+       plot_sensor_measurement_series_keys: plot_sensor_measurement_series_keys
      )
     }
   end
@@ -42,8 +42,8 @@ defmodule HomeServerWeb.LocationLive.Show do
 
   @impl true
   def handle_info({:sensor_measurement_created, sensor_measurement}, socket) do
-    sensor_measurement_key = SensorMeasurementKey.factory(sensor_measurement)
-    plot_component_id = PlotComponent.plot_component_id(sensor_measurement_key)
+    sensor_measurement_series_key = SensorMeasurementSeriesKey.factory(sensor_measurement)
+    plot_component_id = PlotComponent.plot_component_id(sensor_measurement_series_key)
     send_update PlotComponent, id: plot_component_id, sensor_measurement: sensor_measurement
     {:noreply, socket}
   end
