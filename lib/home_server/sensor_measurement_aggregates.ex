@@ -30,6 +30,19 @@ defmodule HomeServer.SensorMeasurementAggregates do
     Repo.all(SensorMeasurementAggregate)
   end
 
+  def list_sensor_measurement_aggregates_by_keys(keys) do
+    keys
+    |> Enum.map(fn key ->
+      key
+      |> Map.take(SensorMeasurementAggregateKey.attribute_list())
+      |> Keyword.new()
+    end)
+    |> Enum.reduce(SensorMeasurementAggregate, fn clause, query ->
+      or_where(query, ^clause)
+    end)
+    |> Repo.all
+  end
+
   @doc """
   Gets a single sensor_measurement_aggregate.
 

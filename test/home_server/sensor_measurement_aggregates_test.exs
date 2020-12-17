@@ -48,6 +48,18 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
       }) == nil
     end
 
+    test "list_sensor_measurement_aggregates_by_keys/1 returns the sensor_measurement_aggregates with given keys", %{location_id: location_id, sensor_measurement_aggregate: sensor_measurement_aggregate} do
+      assert SensorMeasurementAggregates.list_sensor_measurement_aggregates_by_keys([
+        %SensorMeasurementAggregateKey{
+          location_id: location_id,
+          resolution: "hour",
+          quantity: "Temperature",
+          unit: "Celsius",
+          measured_at: sensor_measurement_aggregate.measured_at
+        }
+      ]) == [sensor_measurement_aggregate]
+    end
+
     test "create_sensor_measurement/1 with valid data creates", %{location_id: location_id} do
       assert {:ok, %SensorMeasurementAggregate{} = sensor_measurement_aggregate} = SensorMeasurementAggregates.create_sensor_measurement_aggregate(Map.merge(@valid_attrs, %{location_id: location_id}))
       assert sensor_measurement_aggregate.location_id == location_id

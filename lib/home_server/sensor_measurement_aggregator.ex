@@ -65,32 +65,38 @@ defmodule HomeServer.SensorMeasurementAggregator do
 
   @spec build_aggregates(sensor_measurement_list, binary) :: aggregate_payload_tuples
   def build_aggregates(sensor_measurements, resolution) do
+    acc = prepare_aggregates(sensor_measurements, resolution)
     sensor_measurements
-    |> Enum.reduce(%{}, fn (sensor_measurement, acc) ->
+    |> Enum.reduce(acc, fn (sensor_measurement, acc) ->
       {:ok, key} = SensorMeasurementAggregateKey.factory(sensor_measurement, resolution)
 
-      case Map.has_key?(acc, key) || load_sensor_measurement_aggregate(key) do
-        true ->
-          Map.update!(acc, key, fn {aggregator, payload} ->
-            {aggregator, append_payload(payload, sensor_measurement)}
-          end)
-        nil ->
-          data = {
-            SensorMeasurementAggregate.factory(key),
-            build_payload(sensor_measurement)
-          }
-          Map.put(acc, key, data)
-        %SensorMeasurementAggregate{} = aggregate ->
-          payload =
-            aggregate
-            |> build_payload()
-            |> append_payload(sensor_measurement)
-          Map.put(acc, key, {aggregate, payload})
-
+      if Map.has_key?(acc, key) do
+        Map.update!(acc, key, fn {aggregator, payload} ->
+          {aggregator, append_payload(payload, sensor_measurement)}
+        end)
+      else
+        data = {
+          SensorMeasurementAggregate.factory(key),
+          build_payload(sensor_measurement)
+        }
+        Map.put(acc, key, data)
       end
     end)
     |> Map.values()
     |> Enum.map(fn {a, p} -> {a, set_stddev(p)} end)
+  end
+
+  def prepare_aggregates(sensor_measurements, resolution) do
+    sensor_measurements
+    |> Enum.map(fn s ->
+      {:ok, key} = SensorMeasurementAggregateKey.factory(s, resolution)
+      key
+    end)
+    |> SensorMeasurementAggregates.list_sensor_measurement_aggregates_by_keys
+    |> Enum.reduce(%{}, fn aggregate, acc ->
+      {:ok, key} = SensorMeasurementAggregateKey.factory(aggregate)
+      Map.put(acc, key, {aggregate, build_payload(aggregate)})
+    end)
   end
 
   @spec persist_aggregates(Multi.t(), aggregate_payload_tuples) :: Multi.t()
@@ -117,10 +123,6 @@ defmodule HomeServer.SensorMeasurementAggregator do
       #changeset = SensorMeasurement.changeset(sensor_measurement, %{aggregated: true})
       #Multi.update(acc, sensor_measurement, changeset)
     #end)
-  end
-
-  def load_sensor_measurement_aggregate(sensor_measurement_aggregate_key) do
-    SensorMeasurementAggregates.get_sensor_measurement_aggregate_by_key(sensor_measurement_aggregate_key)
   end
 
   def build_payload(%SensorMeasurement{} = sensor_measurement) do
