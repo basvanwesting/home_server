@@ -1,9 +1,13 @@
 defmodule HomeServer.LocationPlotQuery do
   import Ecto.Query, warn: false
   alias HomeServer.Repo
+  alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
 
-  #alias HomeServer.SensorMeasurements.{SensorMeasurement, SensorMeasurementSeriesKey}
-  alias HomeServer.SensorMeasurementAggregates.{SensorMeasurementAggregate, SensorMeasurementAggregateSeriesKey}
+  defmodule PlotKey do
+    @attributes [:location_id, :quantity, :unit]
+    @enforce_keys @attributes
+    defstruct @attributes
+  end
 
   def plot_keys(location_id, timescale \\ :hour)
   def plot_keys(location_id, timescale) when is_atom(timescale) do
@@ -20,19 +24,20 @@ defmodule HomeServer.LocationPlotQuery do
       order_by: [asc: s.quantity],
       distinct: true,
       select: [s.quantity, s.unit]
-    ) |> Enum.map(fn [quantity, unit] -> %SensorMeasurementAggregateSeriesKey{location_id: location_id, resolution: resolution, quantity: quantity, unit: unit} end)
+    ) |> Enum.map(fn [quantity, unit] -> %PlotKey{location_id: location_id, quantity: quantity, unit: unit} end)
   end
 
 
   def data(plot_key, timescale \\ :hour)
   def data(plot_key, timescale) when is_atom(timescale) do
-    data(plot_key, measured_at_range_for_timescale(timescale))
+    data(plot_key, timescale, measured_at_range_for_timescale(timescale))
   end
-  def data(plot_key, {start_measured_at, end_measured_at}) do
+  def data(plot_key, timescale, {start_measured_at, end_measured_at}) do
+    resolution = resolution_for_timescale(timescale)
     Repo.all(
       from sm in SensorMeasurementAggregate,
       where: sm.location_id == ^plot_key.location_id,
-      where: sm.resolution == ^plot_key.resolution,
+      where: sm.resolution == ^resolution,
       where: sm.quantity == ^plot_key.quantity,
       where: sm.unit == ^plot_key.unit,
       where: sm.measured_at >= ^start_measured_at,
@@ -60,7 +65,7 @@ defmodule HomeServer.LocationPlotQuery do
   def start_measured_at_for(:year,  end_measured_at), do: DateTime.add(end_measured_at, -3600*24*7*31*365, :second)
 
   def resolution_for_timescale(:hour),  do: "minute"
-  def resolution_for_timescale(:day),   do: "minute"
+  def resolution_for_timescale(:day),   do: "hour"
   def resolution_for_timescale(:week),  do: "hour"
   def resolution_for_timescale(:month), do: "day"
   def resolution_for_timescale(:year),  do: "day"

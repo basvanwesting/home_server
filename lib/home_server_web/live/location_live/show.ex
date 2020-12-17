@@ -2,11 +2,7 @@ defmodule HomeServerWeb.LocationLive.Show do
   use HomeServerWeb, :live_view
 
   alias HomeServer.UserLocations
-  alias HomeServer.Locations
   alias HomeServer.LocationPlotQuery
-  #alias HomeServer.SensorMeasurements.SensorMeasurementSeriesKey
-  alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateSeriesKey
-  alias HomeServerWeb.LocationLive.PlotComponent
 
   @impl true
   def mount(_params, session, socket) do
@@ -21,8 +17,6 @@ defmodule HomeServerWeb.LocationLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     location = UserLocations.get_location!(id, socket.assigns.current_user)
-    if connected?(socket), do: Locations.subscribe(location)
-
     plot_keys = LocationPlotQuery.plot_keys(location.id, socket.assigns.timescale)
 
     {:noreply,
@@ -41,17 +35,6 @@ defmodule HomeServerWeb.LocationLive.Show do
   def handle_event("set_timescale_to_week",  _, socket), do: {:noreply, assign(socket, :timescale, :week)}
   def handle_event("set_timescale_to_month", _, socket), do: {:noreply, assign(socket, :timescale, :month)}
   def handle_event("set_timescale_to_year",  _, socket), do: {:noreply, assign(socket, :timescale, :year)}
-
-  @impl true
-  def handle_info({:sensor_measurement_created, sensor_measurement}, socket) do
-    with {:ok, plot_key} <- SensorMeasurementAggregateSeriesKey.factory(sensor_measurement, socket.assigns.timescale) do
-      plot_component_id = PlotComponent.plot_component_id(plot_key)
-      send_update PlotComponent, id: plot_component_id, sensor_measurement: sensor_measurement
-      {:noreply, socket}
-    else
-      _ -> {:noreply, socket}
-    end
-  end
 
   defp page_title(:show), do: "Show Location"
   defp page_title(:edit), do: "Edit Location"
