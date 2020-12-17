@@ -14,21 +14,21 @@ defmodule HomeServer.LocationPlotQueryTest do
       sensor_measurement_fixture(%{
         measured_at: "2020-01-01T12:0#{i}:0#{i}Z",
         quantity: "Temperature",
-        value: 22.01234 + i,
+        value: 22.0 + i,
         unit: "C",
         location_id: location_id,
       })
       sensor_measurement_fixture(%{
         measured_at: "2020-01-01T12:0#{i}:0#{i}Z",
         quantity: "CO2",
-        value: 400.01234 + 2 * i,
+        value: 400.0 + 2 * i,
         unit: "ppm",
         location_id: location_id,
       })
       sensor_measurement_fixture(%{
         measured_at: "2020-01-01T12:0#{i}:3#{i}Z",
         quantity: "CO2",
-        value: 401.01234 + 2 * i,
+        value: 401.0 + 2 * i,
         unit: "ppm",
         location_id: location_id,
       })

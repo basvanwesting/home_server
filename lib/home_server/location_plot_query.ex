@@ -39,7 +39,7 @@ defmodule HomeServer.LocationPlotQuery do
       ],
       group_by: 1
     )
-    |> Enum.map(fn [measured_at, value] -> {DateTime.truncate(measured_at, :second), Float.round(value, 1)} end)
+    |> Enum.map(fn [measured_at, value] -> {DateTime.truncate(measured_at, :second), value} end)
   end
 
   def measured_at_range_for_timescale(timescale \\ :hour, end_measured_at \\ DateTime.now!("Etc/UTC"))

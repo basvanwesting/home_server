@@ -16,7 +16,7 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
         sensor_measurement_fixture(%{
           measured_at: "2020-01-01T12:0#{div(i,4)}:0#{i}Z",
           quantity: "CO2",
-          value: 400.01234 + 2 * i,
+          value: 400.0 + 2 * i,
           unit: "ppm",
           location_id: location_id,
         })
@@ -37,29 +37,29 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
       assert data ==
         [
           %{
-            average: 404.01234,
+            average: 404.0,
             count: 4,
-            max: 406.01234,
+            max: 406.0,
             measured_at: ~U[2020-01-01 12:00:00Z],
-            min: 400.01234,
+            min: 400.0,
             stddev: 1.632993,
             variance: 8.0,
           },
           %{
-            average: 412.01234,
+            average: 412.0,
             count: 4,
-            max: 414.01234,
+            max: 414.0,
             measured_at: ~U[2020-01-01 12:01:00Z],
-            min: 408.01234,
+            min: 408.0,
             stddev: 1.632993,
             variance: 8.0,
           },
           %{
-            average: 418.01234,
+            average: 418.0,
             count: 2,
-            max: 418.01234,
+            max: 418.0,
             measured_at: ~U[2020-01-01 12:02:00Z],
-            min: 416.01234,
+            min: 416.0,
             stddev: 0.0,
             variance: 0.0,
           }
