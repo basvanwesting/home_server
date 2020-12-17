@@ -42,7 +42,7 @@ defmodule HomeServer.SensorMeasurementAggregator do
       |> Stream.chunk_every(batch_size)
       |> Stream.each(&process_batch/1)
       |> Stream.run()
-    end)
+    end, timeout: 150000)
   end
 
   @spec process_batch(sensor_measurement_list) :: {:ok, any} | {:error, any} | {:done}

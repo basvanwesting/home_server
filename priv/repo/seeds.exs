@@ -37,18 +37,18 @@ current_time = DateTime.now!("Etc/UTC")
 for i <- 0..4000 do
   {:ok, _sensor_measurement} = HomeServer.SensorMeasurements.create_sensor_measurement(%{
     location_id: location_office.id,
-    measured_at: DateTime.add(current_time, -20 * i, :second),
+    measured_at: DateTime.add(current_time, -60 * i, :second),
     quantity:    "Temperature",
-    value:       :rand.normal() * 10 + 20,
+    value:       :rand.normal() * 10 + 20 + i * 10 / 4000,
     unit:        "Celsius",
     host:        "localhost",
     sensor:      "A0",
   })
   {:ok, _sensor_measurement} = HomeServer.SensorMeasurements.create_sensor_measurement(%{
     location_id: location_office.id,
-    measured_at: DateTime.add(current_time, -20 * i, :second),
+    measured_at: DateTime.add(current_time, -60 * i, :second),
     quantity:    "CO2",
-    value:       :rand.normal() * 100 + 500,
+    value:       :rand.normal() * 100 + 500 + i * 200 / 4000,
     unit:        "ppm",
     host:        "localhost",
     sensor:      "A1",

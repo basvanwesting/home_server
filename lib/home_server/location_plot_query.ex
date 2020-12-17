@@ -53,13 +53,15 @@ defmodule HomeServer.LocationPlotQuery do
   def measured_at_range_for_timescale(timescale, end_measured_at) do
     {start_measured_at_for(timescale, end_measured_at), end_measured_at}
   end
-  def start_measured_at_for(:minute, end_measured_at), do: DateTime.add(end_measured_at, -60,        :second)
-  def start_measured_at_for(:hour,   end_measured_at), do: DateTime.add(end_measured_at, -3600,      :second)
-  def start_measured_at_for(:day,    end_measured_at), do: DateTime.add(end_measured_at, -3600*24,   :second)
-  def start_measured_at_for(:week,   end_measured_at), do: DateTime.add(end_measured_at, -3600*24*7, :second)
+  def start_measured_at_for(:hour,  end_measured_at), do: DateTime.add(end_measured_at, -3600,             :second)
+  def start_measured_at_for(:day,   end_measured_at), do: DateTime.add(end_measured_at, -3600*24,          :second)
+  def start_measured_at_for(:week,  end_measured_at), do: DateTime.add(end_measured_at, -3600*24*7,        :second)
+  def start_measured_at_for(:month, end_measured_at), do: DateTime.add(end_measured_at, -3600*24*7*31,     :second)
+  def start_measured_at_for(:year,  end_measured_at), do: DateTime.add(end_measured_at, -3600*24*7*31*365, :second)
 
-  def resolution_for_timescale(:minute), do: "minute"
-  def resolution_for_timescale(:hour),   do: "minute"
-  def resolution_for_timescale(:day),    do: "hour"
-  def resolution_for_timescale(:week),   do: "day"
+  def resolution_for_timescale(:hour),  do: "minute"
+  def resolution_for_timescale(:day),   do: "minute"
+  def resolution_for_timescale(:week),  do: "hour"
+  def resolution_for_timescale(:month), do: "day"
+  def resolution_for_timescale(:year),  do: "day"
 end

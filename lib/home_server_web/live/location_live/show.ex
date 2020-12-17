@@ -36,10 +36,11 @@ defmodule HomeServerWeb.LocationLive.Show do
   end
 
   @impl true
-  def handle_event("set_timescale_to_minute", _, socket), do: {:noreply, assign(socket, :timescale, :minute)}
-  def handle_event("set_timescale_to_hour",   _, socket), do: {:noreply, assign(socket, :timescale, :hour)}
-  def handle_event("set_timescale_to_day",    _, socket), do: {:noreply, assign(socket, :timescale, :day)}
-  def handle_event("set_timescale_to_week",   _, socket), do: {:noreply, assign(socket, :timescale, :week)}
+  def handle_event("set_timescale_to_hour",  _, socket), do: {:noreply, assign(socket, :timescale, :hour)}
+  def handle_event("set_timescale_to_day",   _, socket), do: {:noreply, assign(socket, :timescale, :day)}
+  def handle_event("set_timescale_to_week",  _, socket), do: {:noreply, assign(socket, :timescale, :week)}
+  def handle_event("set_timescale_to_month", _, socket), do: {:noreply, assign(socket, :timescale, :month)}
+  def handle_event("set_timescale_to_year",  _, socket), do: {:noreply, assign(socket, :timescale, :year)}
 
   @impl true
   def handle_info({:sensor_measurement_created, sensor_measurement}, socket) do
