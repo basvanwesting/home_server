@@ -3,7 +3,7 @@ defmodule HomeServer.SensorMeasurementAggregator do
   @type sensor_measurement_aggregate_list :: [SensorMeasurementAggregate.t()]
   @type aggregate_payload_tuples :: [{SensorMeasurementAggregate.t(), Payload.t()}]
 
-  import Ecto.Query, warn: false
+  alias Ecto.Multi
   alias HomeServer.Repo
 
   alias HomeServer.SensorMeasurements.SensorMeasurement
@@ -67,13 +67,14 @@ defmodule HomeServer.SensorMeasurementAggregator do
     |> Enum.map(fn {a, p} -> {a, set_stddev(p)} end)
   end
 
-  #@spec persist(aggregate_payload_tuples) :: any
+  @spec persist(aggregate_payload_tuples) :: {:ok, any} | {:error, any}
   def persist(aggregate_payload_tuples) do
-    for {aggregate, payload} <- aggregate_payload_tuples do
-      aggregate
-      |> SensorMeasurementAggregate.changeset(Map.from_struct(payload))
-      |> Repo.insert_or_update()
-    end
+    Enum.reduce(aggregate_payload_tuples, Multi.new(), fn {aggregate, payload}, acc ->
+      key = SensorMeasurementAggregateKey.factory(aggregate)
+      changeset = SensorMeasurementAggregate.changeset(aggregate, Map.from_struct(payload))
+      Multi.insert_or_update(acc, key, changeset)
+    end)
+    |> Repo.transaction()
   end
 
   def load_sensor_measurement_aggregate(sensor_measurement_aggregate_key) do
@@ -96,7 +97,6 @@ defmodule HomeServer.SensorMeasurementAggregator do
       sensor_measurement_aggregate
       |> Map.take(Payload.attribute_list())
       |> set_variance()
-      #|> Enum.into(%Payload{})
 
     struct(Payload, attrs)
   end
@@ -111,13 +111,11 @@ defmodule HomeServer.SensorMeasurementAggregator do
     %{payload | average: average, min: min, max: max, variance: variance, count: count}
   end
 
-  def set_variance(nil), do: nil
   def set_variance(payload) do
     variance = payload.stddev * payload.stddev * (payload.count - 1)
     %{payload | variance: variance}
   end
 
-  def set_stddev(nil), do: nil
   def set_stddev(%{count: count} = payload) when count <= 1 do
     %{payload | stddev: 0}
   end
