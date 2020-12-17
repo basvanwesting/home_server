@@ -19,7 +19,11 @@ defmodule HomeServerWeb.SensorMeasurementLiveTest do
   describe "Index" do
     setup [:create_user, :create_sensor_measurement]
 
-    test "lists all sensor_measurements", %{conn: conn, user: user, sensor_measurement: sensor_measurement} do
+    test "lists all sensor_measurements", %{
+      conn: conn,
+      user: user,
+      sensor_measurement: sensor_measurement
+    } do
       conn = conn |> log_in_user(user)
       {:ok, _index_live, html} = live(conn, Routes.sensor_measurement_index_path(conn, :index))
 
@@ -31,9 +35,15 @@ defmodule HomeServerWeb.SensorMeasurementLiveTest do
   describe "Show" do
     setup [:create_user, :create_sensor_measurement]
 
-    test "displays sensor_measurement", %{conn: conn, user: user, sensor_measurement: sensor_measurement} do
+    test "displays sensor_measurement", %{
+      conn: conn,
+      user: user,
+      sensor_measurement: sensor_measurement
+    } do
       conn = conn |> log_in_user(user)
-      {:ok, _show_live, html} = live(conn, Routes.sensor_measurement_show_path(conn, :show, sensor_measurement))
+
+      {:ok, _show_live, html} =
+        live(conn, Routes.sensor_measurement_show_path(conn, :show, sensor_measurement))
 
       assert html =~ "Show Sensor measurement"
       assert html =~ sensor_measurement.sensor

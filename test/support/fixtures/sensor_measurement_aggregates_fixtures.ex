@@ -6,12 +6,11 @@ defmodule HomeServer.SensorMeasurementAggregatesFixtures do
 
   alias HomeServer.SensorMeasurementAggregates
 
-
   def sensor_measurement_aggregate_fixture(attrs \\ %{}) do
     {:ok, sensor_measurement_aggregate} =
       attrs
       |> Enum.into(%{
-        #location_id: 1,
+        # location_id: 1,
         resolution: "hour",
         quantity: "Temperature",
         unit: "Celsius",
@@ -20,7 +19,7 @@ defmodule HomeServer.SensorMeasurementAggregatesFixtures do
         min: "20.0",
         max: "25.0",
         stddev: "1.0",
-        count: 60,
+        count: 60
       })
       |> SensorMeasurementAggregates.create_sensor_measurement_aggregate()
 

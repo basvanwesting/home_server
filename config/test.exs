@@ -25,8 +25,9 @@ config :home_server, HomeServerWeb.Endpoint,
 config :logger, level: :warn
 
 config :amqp, :sensor_measurements_queue, "sensor_measurements_test"
+
 config :amqp, :connection_options,
-  host:     "rabbitmq",
+  host: "rabbitmq",
   username: "guest",
   password: "guest"
 

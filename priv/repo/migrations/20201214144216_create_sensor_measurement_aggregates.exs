@@ -15,6 +15,12 @@ defmodule HomeServer.Repo.Migrations.CreateSensorMeasurementAggregates do
       add :count, :integer, null: false
     end
 
-    create unique_index(:sensor_measurement_aggregates, [:location_id, :resolution, :quantity, :unit, :measured_at])
+    create unique_index(:sensor_measurement_aggregates, [
+             :location_id,
+             :resolution,
+             :quantity,
+             :unit,
+             :measured_at
+           ])
   end
 end

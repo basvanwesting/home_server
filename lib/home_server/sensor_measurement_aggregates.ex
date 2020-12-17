@@ -20,12 +20,14 @@ defmodule HomeServer.SensorMeasurementAggregates do
 
   """
   def list_sensor_measurement_aggregates(opts \\ [])
+
   def list_sensor_measurement_aggregates(limit: limit) when limit > 0 do
     SensorMeasurementAggregate
     |> limit(^limit)
     |> order_by(desc: :measured_at)
-    |> Repo.all
+    |> Repo.all()
   end
+
   def list_sensor_measurement_aggregates([]) do
     Repo.all(SensorMeasurementAggregate)
   end
@@ -40,7 +42,7 @@ defmodule HomeServer.SensorMeasurementAggregates do
     |> Enum.reduce(SensorMeasurementAggregate, fn clause, query ->
       or_where(query, ^clause)
     end)
-    |> Repo.all
+    |> Repo.all()
   end
 
   @doc """
@@ -82,8 +84,8 @@ defmodule HomeServer.SensorMeasurementAggregates do
     %SensorMeasurementAggregate{}
     |> SensorMeasurementAggregate.changeset(attrs)
     |> Repo.insert(
-      #conflict_target: :sensor_measurement_aggregates_location_id_resolution_quantity_u,
-      #on_conflict: {:replace, [:average, :min, :max, :stddev, :count]}
+      # conflict_target: :sensor_measurement_aggregates_location_id_resolution_quantity_u,
+      # on_conflict: {:replace, [:average, :min, :max, :stddev, :count]}
     )
     |> broadcast(:sensor_measurement_aggregate_created)
   end
@@ -100,7 +102,10 @@ defmodule HomeServer.SensorMeasurementAggregates do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_sensor_measurement_aggregate(%SensorMeasurementAggregate{} = sensor_measurement_aggregate, attrs) do
+  def update_sensor_measurement_aggregate(
+        %SensorMeasurementAggregate{} = sensor_measurement_aggregate,
+        attrs
+      ) do
     sensor_measurement_aggregate
     |> SensorMeasurementAggregate.changeset(attrs)
     |> Repo.update()
@@ -118,7 +123,9 @@ defmodule HomeServer.SensorMeasurementAggregates do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_sensor_measurement_aggregate(%SensorMeasurementAggregate{} = sensor_measurement_aggregate) do
+  def delete_sensor_measurement_aggregate(
+        %SensorMeasurementAggregate{} = sensor_measurement_aggregate
+      ) do
     Repo.delete(sensor_measurement_aggregate)
   end
 
@@ -131,7 +138,10 @@ defmodule HomeServer.SensorMeasurementAggregates do
       %Ecto.Changeset{data: %SensorMeasurementAggregate{}}
 
   """
-  def change_sensor_measurement_aggregate(%SensorMeasurementAggregate{} = sensor_measurement_aggregate, attrs \\ %{}) do
+  def change_sensor_measurement_aggregate(
+        %SensorMeasurementAggregate{} = sensor_measurement_aggregate,
+        attrs \\ %{}
+      ) do
     SensorMeasurementAggregate.changeset(sensor_measurement_aggregate, attrs)
   end
 
@@ -145,13 +155,16 @@ defmodule HomeServer.SensorMeasurementAggregates do
       sensor_measurement_aggregates_topic(),
       {name, sensor_measurement_aggregate}
     )
+
     Phoenix.PubSub.broadcast(
       HomeServer.PubSub,
       Locations.location_topic(sensor_measurement_aggregate),
       {name, sensor_measurement_aggregate}
     )
+
     {:ok, sensor_measurement_aggregate}
   end
+
   def broadcast({:error, _changeset} = error, _name), do: error
 
   def sensor_measurement_aggregates_topic(), do: "sensor_measurement_aggregates"

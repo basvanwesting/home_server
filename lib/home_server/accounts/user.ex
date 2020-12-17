@@ -6,16 +6,16 @@ defmodule HomeServer.Accounts.User do
   alias HomeServer.Devices.Device
 
   @type t :: %__MODULE__{
-      id: non_neg_integer | nil,
-      email: binary | nil,
-      password: binary | nil,
-      hashed_password: binary | nil,
-      confirmed_at: NaiveDateTime.t() | nil,
-      locations: [Location.t()] | nil | Ecto.Association.NotLoaded.t(),
-      devices: [Device.t()] | nil | Ecto.Association.NotLoaded.t(),
-      inserted_at: NaiveDateTime.t() | nil,
-      updated_at: NaiveDateTime.t() | nil,
-    }
+          id: non_neg_integer | nil,
+          email: binary | nil,
+          password: binary | nil,
+          hashed_password: binary | nil,
+          confirmed_at: NaiveDateTime.t() | nil,
+          locations: [Location.t()] | nil | Ecto.Association.NotLoaded.t(),
+          devices: [Device.t()] | nil | Ecto.Association.NotLoaded.t(),
+          inserted_at: NaiveDateTime.t() | nil,
+          updated_at: NaiveDateTime.t() | nil
+        }
 
   @derive {Inspect, except: [:password]}
   schema "users" do

@@ -6,7 +6,6 @@ defmodule HomeServerWeb.LocationLive.Show do
 
   @impl true
   def mount(_params, session, socket) do
-
     socket =
       assign_defaults(session, socket)
       |> assign(:timescale, :day)
@@ -25,16 +24,24 @@ defmodule HomeServerWeb.LocationLive.Show do
      |> assign(
        location: location,
        plot_keys: plot_keys
-     )
-    }
+     )}
   end
 
   @impl true
-  def handle_event("set_timescale_to_hour",  _, socket), do: {:noreply, assign(socket, :timescale, :hour)}
-  def handle_event("set_timescale_to_day",   _, socket), do: {:noreply, assign(socket, :timescale, :day)}
-  def handle_event("set_timescale_to_week",  _, socket), do: {:noreply, assign(socket, :timescale, :week)}
-  def handle_event("set_timescale_to_month", _, socket), do: {:noreply, assign(socket, :timescale, :month)}
-  def handle_event("set_timescale_to_year",  _, socket), do: {:noreply, assign(socket, :timescale, :year)}
+  def handle_event("set_timescale_to_hour", _, socket),
+    do: {:noreply, assign(socket, :timescale, :hour)}
+
+  def handle_event("set_timescale_to_day", _, socket),
+    do: {:noreply, assign(socket, :timescale, :day)}
+
+  def handle_event("set_timescale_to_week", _, socket),
+    do: {:noreply, assign(socket, :timescale, :week)}
+
+  def handle_event("set_timescale_to_month", _, socket),
+    do: {:noreply, assign(socket, :timescale, :month)}
+
+  def handle_event("set_timescale_to_year", _, socket),
+    do: {:noreply, assign(socket, :timescale, :year)}
 
   defp page_title(:show), do: "Show Location"
   defp page_title(:edit), do: "Edit Location"

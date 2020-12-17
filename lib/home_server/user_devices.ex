@@ -13,7 +13,7 @@ defmodule HomeServer.UserDevices do
   def list_devices(%User{} = user) do
     Repo.all(
       from e in Device,
-      where: e.user_id == ^user.id
+        where: e.user_id == ^user.id
     )
   end
 
@@ -47,5 +47,4 @@ defmodule HomeServer.UserDevices do
   def build_device(attrs \\ %{}, %User{} = user) do
     Ecto.build_assoc(user, :devices, attrs)
   end
-
 end

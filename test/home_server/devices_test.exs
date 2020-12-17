@@ -61,8 +61,8 @@ defmodule HomeServer.DevicesTest do
 
       assert location.id == Devices.get_location_id_for_host("nerves-1234")
       assert location.id == Devices.get_location_id_for_host("1234")
-      assert nil         == Devices.get_location_id_for_host("foobar")
-      assert nil         == Devices.get_location_id_for_host(nil)
+      assert nil == Devices.get_location_id_for_host("foobar")
+      assert nil == Devices.get_location_id_for_host(nil)
     end
   end
 end

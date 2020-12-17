@@ -19,12 +19,14 @@ defmodule HomeServer.SensorMeasurements do
 
   """
   def list_sensor_measurements(opts \\ [])
+
   def list_sensor_measurements(limit: limit) when limit > 0 do
     SensorMeasurement
     |> limit(^limit)
     |> order_by(desc: :measured_at)
-    |> Repo.all
+    |> Repo.all()
   end
+
   def list_sensor_measurements([]) do
     Repo.all(SensorMeasurement)
   end
@@ -40,7 +42,7 @@ defmodule HomeServer.SensorMeasurements do
     |> limit(^limit)
     |> where([s], s.aggregated == false)
     |> order_by(desc: :measured_at)
-    |> Repo.all
+    |> Repo.all()
   end
 
   @doc """
@@ -135,13 +137,16 @@ defmodule HomeServer.SensorMeasurements do
       sensor_measurements_topic(),
       {name, sensor_measurement}
     )
+
     Phoenix.PubSub.broadcast(
       HomeServer.PubSub,
       Locations.location_topic(sensor_measurement),
       {name, sensor_measurement}
     )
+
     {:ok, sensor_measurement}
   end
+
   def broadcast({:error, _changeset} = error, _name), do: error
 
   def sensor_measurements_topic(), do: "sensor_measurements"

@@ -24,7 +24,10 @@ defmodule HomeServer.LocationsTest do
 
     test "create_location/1 with valid data creates a location" do
       %{id: user_id} = user = user_fixture()
-      assert {:ok, %Location{} = location} = Locations.create_location(Map.put(@valid_attrs, :user_id, user_id))
+
+      assert {:ok, %Location{} = location} =
+               Locations.create_location(Map.put(@valid_attrs, :user_id, user_id))
+
       assert location.name == "some name"
       assert location.user_id == user_id
 
@@ -62,10 +65,9 @@ defmodule HomeServer.LocationsTest do
     test "location_topic" do
       location = location_fixture()
 
-      assert Locations.location_topic(1)                  == "location:1"
-      assert Locations.location_topic(%{location_id: 1})  == "location:1"
-      assert Locations.location_topic(location)           == "location:#{location.id}"
+      assert Locations.location_topic(1) == "location:1"
+      assert Locations.location_topic(%{location_id: 1}) == "location:1"
+      assert Locations.location_topic(location) == "location:#{location.id}"
     end
-
   end
 end

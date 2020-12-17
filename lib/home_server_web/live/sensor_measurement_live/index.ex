@@ -7,7 +7,8 @@ defmodule HomeServerWeb.SensorMeasurementLive.Index do
   def mount(_params, _session, socket) do
     if connected?(socket), do: SensorMeasurements.subscribe()
 
-    {:ok, assign(socket, :sensor_measurements, list_sensor_measurements(limit: 10)), temporary_assigns: [sensor_measurements: []]}
+    {:ok, assign(socket, :sensor_measurements, list_sensor_measurements(limit: 10)),
+     temporary_assigns: [sensor_measurements: []]}
   end
 
   @impl true
@@ -27,7 +28,9 @@ defmodule HomeServerWeb.SensorMeasurementLive.Index do
       update(
         socket,
         :sensor_measurements,
-        fn sensor_measurements -> [sensor_measurement |> HomeServer.Repo.preload(:location) | sensor_measurements] end
+        fn sensor_measurements ->
+          [sensor_measurement |> HomeServer.Repo.preload(:location) | sensor_measurements]
+        end
       )
 
     {:noreply, socket}

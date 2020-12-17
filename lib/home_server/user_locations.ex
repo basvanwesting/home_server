@@ -13,7 +13,7 @@ defmodule HomeServer.UserLocations do
   def list_locations(%User{} = user) do
     Repo.all(
       from e in Location,
-      where: e.user_id == ^user.id
+        where: e.user_id == ^user.id
     )
   end
 
@@ -47,5 +47,4 @@ defmodule HomeServer.UserLocations do
   def build_location(attrs \\ %{}, %User{} = user) do
     Ecto.build_assoc(user, :locations, attrs)
   end
-
 end

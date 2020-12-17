@@ -33,9 +33,10 @@ defmodule HomeServer.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bcrypt_elixir, "~> 2.0"},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:phx_gen_auth, "~> 0.5", only: [:dev], runtime: false},
       {:assertions, "~> 0.10", only: :test},
+      {:bcrypt_elixir, "~> 2.0"},
       {:phoenix, "~> 1.5.5"},
       {:phoenix_ecto, "~> 4.1"},
       {:ecto_sql, "~> 3.4"},
@@ -52,8 +53,8 @@ defmodule HomeServer.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:broadway_rabbitmq, "~> 0.6.0"},
       {:amqp, "~> 1.0"},
-      #{:contex, "~> 0.3.0"},
-      {:contex, git: "https://github.com/mindok/contex"},
+      # {:contex, "~> 0.3.0"},
+      {:contex, git: "https://github.com/mindok/contex"}
     ]
   end
 

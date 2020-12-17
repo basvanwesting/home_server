@@ -76,17 +76,17 @@ config :phoenix, :stacktrace_depth, 20
 config :phoenix, :plug_init_mode, :runtime
 
 sensor_measurements_queue = "sensor_measurements_dev"
+
 amqp_connection_options = [
-  host:     "rabbitmq",
+  host: "rabbitmq",
   username: "guest",
   password: "guest"
 ]
 
 config :amqp, :sensor_measurements_queue, sensor_measurements_queue
 config :amqp, :connection_options, amqp_connection_options
+
 config :broadway, :producer_module, {
   BroadwayRabbitMQ.Producer,
-  queue: sensor_measurements_queue,
-  connection: amqp_connection_options,
-  qos: [ prefetch_count: 10 ]
+  queue: sensor_measurements_queue, connection: amqp_connection_options, qos: [prefetch_count: 10]
 }

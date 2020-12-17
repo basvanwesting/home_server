@@ -44,5 +44,4 @@ defmodule HomeServerWeb.DeviceLive.Index do
     UserDevices.list_devices(user)
     |> HomeServer.Repo.preload(:location)
   end
-
 end

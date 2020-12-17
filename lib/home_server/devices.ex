@@ -106,5 +106,6 @@ defmodule HomeServer.Devices do
     identifier = String.replace_prefix(host, "nerves-", "")
     Repo.one(from d in Device, where: d.identifier == ^identifier, select: d.location_id)
   end
+
   def get_location_id_for_host(_), do: nil
 end

@@ -5,12 +5,12 @@ defmodule HomeServer.Locations.Location do
   alias HomeServer.Accounts.User
 
   @type t :: %__MODULE__{
-      id: non_neg_integer | nil,
-      user: User.t() | nil | Ecto.Association.NotLoaded.t(),
-      name: binary | nil,
-      inserted_at: NaiveDateTime.t() | nil,
-      updated_at: NaiveDateTime.t() | nil,
-    }
+          id: non_neg_integer | nil,
+          user: User.t() | nil | Ecto.Association.NotLoaded.t(),
+          name: binary | nil,
+          inserted_at: NaiveDateTime.t() | nil,
+          updated_at: NaiveDateTime.t() | nil
+        }
 
   schema "locations" do
     belongs_to :user, User

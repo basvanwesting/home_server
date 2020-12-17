@@ -6,13 +6,13 @@ defmodule HomeServer.Devices.Device do
   alias HomeServer.Locations.Location
 
   @type t :: %__MODULE__{
-      id: non_neg_integer | nil,
-      identifier: binary | nil,
-      user: User.t() | nil | Ecto.Association.NotLoaded.t(),
-      location: Location.t() | nil | Ecto.Association.NotLoaded.t(),
-      inserted_at: NaiveDateTime.t() | nil,
-      updated_at: NaiveDateTime.t() | nil,
-    }
+          id: non_neg_integer | nil,
+          identifier: binary | nil,
+          user: User.t() | nil | Ecto.Association.NotLoaded.t(),
+          location: Location.t() | nil | Ecto.Association.NotLoaded.t(),
+          inserted_at: NaiveDateTime.t() | nil,
+          updated_at: NaiveDateTime.t() | nil
+        }
 
   schema "devices" do
     field :identifier, :string

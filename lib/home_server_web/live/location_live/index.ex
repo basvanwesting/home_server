@@ -37,7 +37,7 @@ defmodule HomeServerWeb.LocationLive.Index do
     location = UserLocations.get_location!(id, socket.assigns.current_user)
     {:ok, _} = UserLocations.delete_location(location)
 
-    {:noreply, assign(socket, :locations, UserLocations.list_locations(socket.assigns.current_user))}
+    {:noreply,
+     assign(socket, :locations, UserLocations.list_locations(socket.assigns.current_user))}
   end
-
 end

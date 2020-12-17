@@ -4,9 +4,12 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
   alias HomeServer.LocationPlotQuery
   alias Contex.{LinePlot, Dataset, Plot}
 
-  #initial render
+  # initial render
   @impl true
-  def update(%{plot_key: plot_key, timescale: timescale, html_class: html_class} = _assigns, socket) do
+  def update(
+        %{plot_key: plot_key, timescale: timescale, html_class: html_class} = _assigns,
+        socket
+      ) do
     data = LocationPlotQuery.data(plot_key, timescale)
     plot_svg = generate_plot_svg(plot_key, data, html_class)
 
@@ -24,11 +27,13 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
   # appended render
   def update(%{sensor_measurement: sensor_measurement} = _assigns, socket) do
     data = socket.assigns.data ++ [{sensor_measurement.measured_at, sensor_measurement.value}]
-    plot_svg = generate_plot_svg(
-      socket.assigns.plot_key,
-      data,
-      socket.assigns.html_class
-    )
+
+    plot_svg =
+      generate_plot_svg(
+        socket.assigns.plot_key,
+        data,
+        socket.assigns.html_class
+      )
 
     {:ok,
      socket
@@ -49,18 +54,20 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
     placeholder_data = [{DateTime.now!("Etc/UTC"), 0.0}]
     generate_plot_svg(plot_key, placeholder_data, html_class)
   end
+
   def generate_plot_svg(plot_key, data, html_class) do
     ds = Dataset.new(data, ["X", "Max", "+1S", "Avg", "-1S", "Min"])
 
     options = [
       mapping: %{x_col: "X", y_cols: ["Max", "+1S", "Avg", "-1S", "Min"]},
       colour_palette: ["fbe5af", "fbc26f", "ff9838", "fbc26f", "fbe5af"],
-      smoothed: true,
+      smoothed: true
     ]
 
-    plot = Plot.new(ds, LinePlot, 600, 300, options)
-     |> Plot.plot_options(%{legend_setting: :legend_right})
-     |> Plot.titles(plot_key.quantity, plot_key.unit)
+    plot =
+      Plot.new(ds, LinePlot, 600, 300, options)
+      |> Plot.plot_options(%{legend_setting: :legend_right})
+      |> Plot.titles(plot_key.quantity, plot_key.unit)
 
     Plot.to_svg(plot)
     |> apply_html_class(html_class)
@@ -68,9 +75,12 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
 
   def apply_html_class(plot_svg, html_class) do
     {:safe, [head, middle | tail]} = plot_svg
-    middle = middle
+
+    middle =
+      middle
       |> String.replace("class=\"chart", "class=\"chart #{html_class}", global: false)
       |> String.replace_suffix("", " preserveAspectRatio=\"xMidYMid meet\" x=\"0\" y=\"0\" ")
+
     {:safe, [head, middle | tail]}
   end
 
@@ -79,7 +89,8 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
       "PlotComponent",
       plot_key.location_id,
       plot_key.quantity,
-      plot_key.unit,
-    ] |> Enum.join("_")
+      plot_key.unit
+    ]
+    |> Enum.join("_")
   end
 end

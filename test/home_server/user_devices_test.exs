@@ -68,4 +68,3 @@ defmodule HomeServer.UserDevicesTest do
     end
   end
 end
-

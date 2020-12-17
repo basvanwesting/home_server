@@ -17,7 +17,9 @@ defmodule HomeServer.UserLocationsTest do
       location = location_fixture(%{user_id: user_id})
       other_location = location_fixture(%{user_id: user_id})
       _other_location_for_other_user = location_fixture()
-      assert MapSet.new(UserLocations.list_locations(user)) == MapSet.new([location, other_location])
+
+      assert MapSet.new(UserLocations.list_locations(user)) ==
+               MapSet.new([location, other_location])
     end
 
     test "get_location/2 returns the location with given id" do
@@ -43,7 +45,10 @@ defmodule HomeServer.UserLocationsTest do
 
     test "update_location/2 with valid data updates the location" do
       location = location_fixture()
-      assert {:ok, %Location{} = location} = UserLocations.update_location(location, @update_attrs)
+
+      assert {:ok, %Location{} = location} =
+               UserLocations.update_location(location, @update_attrs)
+
       assert location.name == "some updated name"
     end
 
@@ -68,4 +73,3 @@ defmodule HomeServer.UserLocationsTest do
     end
   end
 end
-

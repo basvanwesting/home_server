@@ -14,7 +14,7 @@ defmodule HomeServer.LocationsFixtures do
       attrs
       |> Enum.into(%{
         user_id: user_id,
-        name: "some name",
+        name: "some name"
       })
       |> Locations.create_location()
 
@@ -25,5 +25,4 @@ defmodule HomeServer.LocationsFixtures do
     %{id: user_id} = _user = user_fixture()
     location_fixture(Map.put(attrs, :user_id, user_id))
   end
-
 end

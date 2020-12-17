@@ -109,5 +109,4 @@ defmodule HomeServer.Locations do
   def location_topic(%Location{} = location), do: location_topic(location.id)
   def location_topic(%{location_id: location_id}), do: location_topic(location_id)
   def location_topic(location_id), do: "location:" <> to_string(location_id)
-
 end

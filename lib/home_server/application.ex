@@ -17,7 +17,7 @@ defmodule HomeServer.Application do
       HomeServerWeb.Endpoint,
       # Start a worker by calling: HomeServer.Worker.start_link(arg)
       # {HomeServer.Worker, arg}
-      {HomeServer.SensorMeasurementsBroadway, []},
+      {HomeServer.SensorMeasurementsBroadway, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
