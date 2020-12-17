@@ -29,8 +29,8 @@ defmodule HomeServer.SensorMeasurementAggregator do
     def attribute_list, do: @attributes
   end
 
-  @spec process(sensor_measurement_list) :: {:ok, any} | {:error, any}
-  def process(sensor_measurements) do
+  @spec process_batch(sensor_measurement_list) :: {:ok, any} | {:error, any}
+  def process_batch(sensor_measurements) do
     sensor_measurements
     |> build()
     |> persist()
@@ -109,11 +109,11 @@ defmodule HomeServer.SensorMeasurementAggregator do
   end
 
   def append_payload(payload, sensor_measurement) do
-    average = payload.average + (sensor_measurement.value - payload.average) / payload.count
+    count = payload.count + 1
+    average = payload.average + (sensor_measurement.value - payload.average) / count
     variance = payload.variance + (sensor_measurement.value - payload.average) * (sensor_measurement.value - average)
     min = min(payload.min, sensor_measurement.value)
     max = max(payload.max, sensor_measurement.value)
-    count = payload.count + 1
 
     %{payload | average: average, min: min, max: max, variance: variance, count: count}
   end
@@ -124,7 +124,7 @@ defmodule HomeServer.SensorMeasurementAggregator do
   end
 
   def set_stddev(%{count: count} = payload) when count <= 1 do
-    %{payload | stddev: 0}
+    %{payload | stddev: 0.0}
   end
   def set_stddev(%{count: count} = payload) when count > 1 do
     stddev = :math.sqrt(payload.variance / (payload.count - 1))
