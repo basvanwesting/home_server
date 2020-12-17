@@ -50,11 +50,16 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
     generate_plot_svg(plot_key, placeholder_data, html_class)
   end
   def generate_plot_svg(plot_key, data, html_class) do
-    ds = Dataset.new(data)
-    line_plot = LinePlot.new(ds)
+    ds = Dataset.new(data, ["X", "Max", "+1S", "Avg", "-1S", "Min"])
 
-    plot = Plot.new(600, 300, line_plot)
-     #|> Plot.plot_options(%{legend_setting: :legend_right})
+    options = [
+      mapping: %{x_col: "X", y_cols: ["Max", "+1S", "Avg", "-1S", "Min"]},
+      colour_palette: ["fbe5af", "fbc26f", "ff9838", "fbc26f", "fbe5af"],
+      smoothed: true,
+    ]
+
+    plot = Plot.new(ds, LinePlot, 600, 300, options)
+     |> Plot.plot_options(%{legend_setting: :legend_right})
      |> Plot.titles(plot_key.quantity, plot_key.unit)
 
     Plot.to_svg(plot)

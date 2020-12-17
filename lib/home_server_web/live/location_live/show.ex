@@ -4,7 +4,8 @@ defmodule HomeServerWeb.LocationLive.Show do
   alias HomeServer.UserLocations
   alias HomeServer.Locations
   alias HomeServer.LocationPlotQuery
-  alias HomeServer.SensorMeasurements.SensorMeasurementSeriesKey
+  #alias HomeServer.SensorMeasurements.SensorMeasurementSeriesKey
+  alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateSeriesKey
   alias HomeServerWeb.LocationLive.PlotComponent
 
   @impl true
@@ -12,7 +13,7 @@ defmodule HomeServerWeb.LocationLive.Show do
 
     socket =
       assign_defaults(session, socket)
-      |> assign(:timescale, :hour)
+      |> assign(:timescale, :day)
 
     {:ok, socket}
   end
@@ -42,10 +43,13 @@ defmodule HomeServerWeb.LocationLive.Show do
 
   @impl true
   def handle_info({:sensor_measurement_created, sensor_measurement}, socket) do
-    plot_key = SensorMeasurementSeriesKey.factory(sensor_measurement)
-    plot_component_id = PlotComponent.plot_component_id(plot_key)
-    send_update PlotComponent, id: plot_component_id, sensor_measurement: sensor_measurement
-    {:noreply, socket}
+    with {:ok, plot_key} <- SensorMeasurementAggregateSeriesKey.factory(sensor_measurement, socket.assigns.timescale) do
+      plot_component_id = PlotComponent.plot_component_id(plot_key)
+      send_update PlotComponent, id: plot_component_id, sensor_measurement: sensor_measurement
+      {:noreply, socket}
+    else
+      _ -> {:noreply, socket}
+    end
   end
 
   defp page_title(:show), do: "Show Location"
