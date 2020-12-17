@@ -31,21 +31,24 @@ defmodule HomeServer.SensorMeasurementAggregator do
 
   @spec process_batch(sensor_measurement_list) :: {:ok, any} | {:error, any}
   def process_batch(sensor_measurements) do
-    sensor_measurements
-    |> build()
-    |> persist()
+    aggregate_payload_tuples = build_aggregates(sensor_measurements)
+
+    Multi.new()
+    |> persist_aggregates(aggregate_payload_tuples)
+    |> mark_sensor_measurements(sensor_measurements)
+    |> Repo.transaction()
   end
 
-  @spec build(sensor_measurement_list) :: aggregate_payload_tuples
-  def build(sensor_measurements) do
+  @spec build_aggregates(sensor_measurement_list) :: aggregate_payload_tuples
+  def build_aggregates(sensor_measurements) do
     for resolution <- @resolutions do
-      build(sensor_measurements, resolution)
+      build_aggregates(sensor_measurements, resolution)
     end
     |> List.flatten()
   end
 
-  @spec build(sensor_measurement_list, binary) :: aggregate_payload_tuples
-  def build(sensor_measurements, resolution) do
+  @spec build_aggregates(sensor_measurement_list, binary) :: aggregate_payload_tuples
+  def build_aggregates(sensor_measurements, resolution) do
     sensor_measurements
     |> Enum.reduce(%{}, fn (sensor_measurement, acc) ->
       {:ok, key} = SensorMeasurementAggregateKey.factory(sensor_measurement, resolution)
@@ -74,14 +77,21 @@ defmodule HomeServer.SensorMeasurementAggregator do
     |> Enum.map(fn {a, p} -> {a, set_stddev(p)} end)
   end
 
-  @spec persist(aggregate_payload_tuples) :: {:ok, any} | {:error, any}
-  def persist(aggregate_payload_tuples) do
-    Enum.reduce(aggregate_payload_tuples, Multi.new(), fn {aggregate, payload}, acc ->
+  @spec persist_aggregates(Multi.t(), aggregate_payload_tuples) :: Multi.t()
+  def persist_aggregates(multi, aggregate_payload_tuples) do
+    Enum.reduce(aggregate_payload_tuples, multi, fn {aggregate, payload}, acc ->
       key = SensorMeasurementAggregateKey.factory(aggregate)
       changeset = SensorMeasurementAggregate.changeset(aggregate, Map.from_struct(payload))
       Multi.insert_or_update(acc, key, changeset)
     end)
-    |> Repo.transaction()
+  end
+
+  @spec mark_sensor_measurements(Multi.t(), sensor_measurement_list) :: Multi.t()
+  def mark_sensor_measurements(multi, sensor_measurements) do
+    Enum.reduce(sensor_measurements, multi, fn sensor_measurement, acc ->
+      changeset = SensorMeasurement.changeset(sensor_measurement, %{aggregated: true})
+      Multi.update(acc, sensor_measurement, changeset)
+    end)
   end
 
   def load_sensor_measurement_aggregate(sensor_measurement_aggregate_key) do

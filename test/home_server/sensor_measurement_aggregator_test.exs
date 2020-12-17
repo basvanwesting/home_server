@@ -8,6 +8,7 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
 
   import HomeServer.SensorMeasurementsFixtures
   import HomeServer.LocationsFixtures
+  import Ecto.Query, only: [from: 2]
 
   defp create_sensor_measurements(_) do
     %{id: location_id} = _location = location_fixture()
@@ -74,10 +75,10 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
     })
   end
 
-  describe "build, with and without existing aggregates" do
+  describe "build_aggregates, with and without existing aggregates" do
     setup [:create_sensor_measurements, :create_sensor_measurement_aggregates]
-    test "build new aggregates for resolution minute", %{sensor_measurements: sensor_measurements} do
-      data = for {aggregate, payload} <- SensorMeasurementAggregator.build(sensor_measurements, "minute") do
+    test "build_aggregates new aggregates for resolution minute", %{sensor_measurements: sensor_measurements} do
+      data = for {aggregate, payload} <- SensorMeasurementAggregator.build_aggregates(sensor_measurements, "minute") do
         %{
           resolution: aggregate.resolution,
           measured_at: aggregate.measured_at,
@@ -97,8 +98,8 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
       ]
     end
 
-    test "build new aggregates for resolution hour", %{sensor_measurements: sensor_measurements} do
-      data = for {aggregate, payload} <- SensorMeasurementAggregator.build(sensor_measurements, "hour") do
+    test "build_aggregates new aggregates for resolution hour", %{sensor_measurements: sensor_measurements} do
+      data = for {aggregate, payload} <- SensorMeasurementAggregator.build_aggregates(sensor_measurements, "hour") do
         %{
           resolution: aggregate.resolution,
           measured_at: aggregate.measured_at,
@@ -136,6 +137,12 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
         %{average: 409.0, count: 10, max: 418.0, measured_at: ~U[2020-01-01 13:00:00Z], min: 400.0, resolution: "hour", stddev: 6.055301},
         %{average: 408.2, count: 11, max: 418.0, measured_at: ~U[2020-01-01 12:00:00Z], min: 400.0, resolution: "day", stddev: 6.353238}
       ]
+
+      query = from s in "sensor_measurements",
+        distinct: true,
+        select: s.aggregated
+
+      assert Repo.all(query) == [true]
     end
   end
 

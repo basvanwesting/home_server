@@ -12,6 +12,7 @@ defmodule HomeServer.SensorMeasurements.SensorMeasurement do
       quantity: binary | nil,
       value: float | nil,
       unit: binary | nil,
+      aggregated: boolean,
       location_id: non_neg_integer | nil,
     }
 
@@ -22,13 +23,14 @@ defmodule HomeServer.SensorMeasurements.SensorMeasurement do
     field :quantity, :string
     field :value, :float
     field :unit, :string
+    field :aggregated, :boolean
     belongs_to :location, Location
   end
 
   @doc false
   def changeset(sensor_measurement, attrs) do
     sensor_measurement
-    |> cast(attrs, [:measured_at, :quantity, :value, :unit, :host, :sensor, :location_id])
+    |> cast(attrs, [:measured_at, :quantity, :value, :unit, :host, :sensor, :location_id, :aggregated])
     |> enrich_location_id()
     |> foreign_key_constraint(:location_id)
     |> validate_required([:measured_at, :quantity, :value, :unit, :host, :sensor])
