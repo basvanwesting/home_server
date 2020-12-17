@@ -16,7 +16,7 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
   describe "sensor_measurement_aggregates" do
     alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
 
-    #@valid_attrs %{measured_at: "2010-04-17T14:00:00Z", resolution: "hour", quantity: "some quantity", unit: "some unit", average: "10.0", min: "8.0", max: "11.0", stddev: "1.0", count: 10}
+    @valid_attrs %{measured_at: "2010-04-17T14:00:00Z", resolution: "hour", quantity: "some quantity", unit: "some unit", average: "10.0", min: "8.0", max: "11.0", stddev: "1.0", count: 10}
     @update_attrs %{measured_at: "2011-05-18T15:01:01Z", resolution: "hour", quantity: "some updated quantity", unit: "some updated unit", average: "10.1", min: "8.1", max: "11.1", stddev: "1.1", count: 11}
     @invalid_attrs %{measured_at: nil, quantity: nil, unit: nil, average: nil}
 
@@ -46,6 +46,14 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
         unit: "Celsius",
         measured_at: sensor_measurement_aggregate.measured_at
       }) == nil
+    end
+
+    test "create_sensor_measurement/1 with valid data creates", %{location_id: location_id} do
+      assert {:ok, %SensorMeasurementAggregate{} = sensor_measurement_aggregate} = SensorMeasurementAggregates.create_sensor_measurement_aggregate(Map.merge(@valid_attrs, %{location_id: location_id}))
+      assert sensor_measurement_aggregate.location_id == location_id
+      assert sensor_measurement_aggregate.quantity == "some quantity"
+      assert sensor_measurement_aggregate.unit == "some unit"
+      assert sensor_measurement_aggregate.average == 10.0
     end
 
     test "create_sensor_measurement_aggregate/1 with invalid data returns error changeset" do

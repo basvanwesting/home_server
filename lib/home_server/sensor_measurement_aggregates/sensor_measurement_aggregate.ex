@@ -2,6 +2,8 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias HomeServer.SensorMeasurements.SensorMeasurement
+  alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateKey
   alias HomeServer.Locations.Location
 
   @type t :: %__MODULE__{
@@ -39,5 +41,9 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
     |> foreign_key_constraint(:location_id)
     |> unique_constraint([:location_id, :resolution, :quantity, :unit, :measured_at])
     |> validate_required([:measured_at, :resolution, :quantity, :unit, :location_id, :average, :min, :max, :stddev, :count])
+  end
+
+  def factory(%SensorMeasurementAggregateKey{} = key) do
+    struct(__MODULE__, Map.from_struct(key))
   end
 end
