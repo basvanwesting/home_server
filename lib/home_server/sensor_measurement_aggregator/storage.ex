@@ -1,5 +1,4 @@
 defmodule HomeServer.SensorMeasurementAggregator.Storage do
-  @type sensor_measurement_list :: [SensorMeasurement.t()]
   @type aggregate_payload_tuple :: {SensorMeasurementAggregate.t(), Payload.t()}
   @type aggregate_payload_tuples :: [aggregate_payload_tuple]
 
@@ -12,7 +11,7 @@ defmodule HomeServer.SensorMeasurementAggregator.Storage do
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateKey
 
-  @spec sensor_measurements_batch(non_neg_integer) :: sensor_measurement_list
+  @spec sensor_measurements_batch(non_neg_integer) :: [SensorMeasurement.t()]
   def sensor_measurements_batch(batch_size \\ 1000) do
     SensorMeasurement
     |> where([s], s.aggregated == false)
@@ -26,7 +25,7 @@ defmodule HomeServer.SensorMeasurementAggregator.Storage do
     SensorMeasurementAggregates.list_sensor_measurement_aggregates_by_keys(keys)
   end
 
-  @spec persist_batch(aggregate_payload_tuples, sensor_measurement_list) :: tuple
+  @spec persist_batch(aggregate_payload_tuples, [SensorMeasurement.t()]) :: tuple
   def persist_batch(aggregate_payload_tuples, sensor_measurements) do
     Multi.new()
     |> persist_aggregates(aggregate_payload_tuples)
@@ -70,7 +69,7 @@ defmodule HomeServer.SensorMeasurementAggregator.Storage do
     end)
   end
 
-  @spec persist_handled_sensor_measurements(Multi.t(), sensor_measurement_list) :: Multi.t()
+  @spec persist_handled_sensor_measurements(Multi.t(), [SensorMeasurement.t()]) :: Multi.t()
   defp persist_handled_sensor_measurements(multi, sensor_measurements) do
     sensor_measurement_ids = Enum.map(sensor_measurements, & &1.id)
 
