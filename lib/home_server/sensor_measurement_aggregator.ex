@@ -10,7 +10,7 @@ defmodule HomeServer.SensorMeasurementAggregator do
 
   alias Ecto.Multi
   alias HomeServer.Repo
-  import Ecto.Query, only: [where: 3]
+  import Ecto.Query, only: [where: 3, limit: 2]
 
   alias HomeServer.SensorMeasurements.SensorMeasurement
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
@@ -36,29 +36,32 @@ defmodule HomeServer.SensorMeasurementAggregator do
 
   @spec process(integer) :: {:ok, any} | {:error, any}
   def process(batch_size \\ 1000) do
-    Repo.transaction(
-      fn ->
-        SensorMeasurement
-        |> where([s], s.aggregated == false)
-        |> Repo.stream()
-        |> Stream.chunk_every(batch_size)
-        |> Stream.each(&process_batch/1)
-        |> Stream.run()
-      end,
-      timeout: 150_000
-    )
+    batch_size
+    |> sensor_measurements_batch()
+    |> process_batch(batch_size)
   end
 
-  @spec process_batch(sensor_measurement_list) :: {:ok, any} | {:error, any} | {:done}
-  def process_batch([]), do: {:done}
+  def sensor_measurements_batch(batch_size \\ 1000) do
+    SensorMeasurement
+    |> where([s], s.aggregated == false)
+    |> limit(^batch_size)
+    |> Repo.all()
+  end
 
-  def process_batch(sensor_measurements) do
+  @spec process_batch(sensor_measurement_list, integer) :: {:ok, any} | {:error, any}
+  def process_batch([], _), do: {:ok, :ok}
+
+  def process_batch(sensor_measurements, batch_size) do
     aggregate_payload_tuples = build_aggregates(sensor_measurements)
 
     Multi.new()
     |> persist_aggregates(aggregate_payload_tuples)
     |> mark_sensor_measurements(sensor_measurements)
     |> Repo.transaction()
+
+    batch_size
+    |> sensor_measurements_batch()
+    |> process_batch(batch_size)
   end
 
   @spec build_aggregates(sensor_measurement_list) :: aggregate_payload_tuples
