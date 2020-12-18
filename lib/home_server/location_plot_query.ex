@@ -87,10 +87,10 @@ defmodule HomeServer.LocationPlotQuery do
     do: DateTime.add(end_measured_at, -3600 * 24 * 7, :second)
 
   def start_measured_at_for(:month, end_measured_at),
-    do: DateTime.add(end_measured_at, -3600 * 24 * 7 * 31, :second)
+    do: DateTime.add(end_measured_at, -3600 * 24 * 31, :second)
 
   def start_measured_at_for(:year, end_measured_at),
-    do: DateTime.add(end_measured_at, -3600 * 24 * 7 * 31 * 365, :second)
+    do: DateTime.add(end_measured_at, -3600 * 24 * 365, :second)
 
   def resolution_for_timescale(:hour), do: "minute"
   def resolution_for_timescale(:day), do: "hour"
