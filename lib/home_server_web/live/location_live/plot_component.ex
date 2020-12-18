@@ -61,7 +61,7 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
     options = [
       mapping: %{x_col: "X", y_cols: ["Max", "+1S", "Avg", "-1S", "Min"]},
       colour_palette: ["fbe5af", "fbc26f", "ff9838", "fbc26f", "fbe5af"],
-      smoothed: true
+      smoothed: false
     ]
 
     plot =
