@@ -109,9 +109,9 @@ defmodule HomeServer.SensorMeasurementAggregator.Batch do
     attrs =
       sensor_measurement_aggregate
       |> Map.take(Payload.attribute_list())
-      |> set_variance()
 
     struct(Payload, attrs)
+    |> set_variance()
   end
 
   def append_payload(payload, sensor_measurement) do

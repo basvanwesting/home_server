@@ -16,7 +16,6 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
           max: float,
           stddev: float,
           count: non_neg_integer,
-          variance: float | nil
         }
 
   schema "sensor_measurement_aggregates" do
@@ -29,7 +28,6 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
     field :min, :float
     field :max, :float
     field :stddev, :float
-    field :variance, :float, virtual: true
     field :count, :integer
   end
 
