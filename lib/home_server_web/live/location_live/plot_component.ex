@@ -51,7 +51,7 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
   end
 
   def generate_plot_svg(plot_key, [], html_class) do
-    placeholder_data = [{DateTime.now!("Etc/UTC"), 0.0}]
+    placeholder_data = [[DateTime.now!("Etc/UTC"), 0.0, 0.0, 0.0, 0.0, 0.0]]
     generate_plot_svg(plot_key, placeholder_data, html_class)
   end
 

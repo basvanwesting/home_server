@@ -37,3 +37,4 @@ npm-debug.log
 
 .fzf-history
 /failures.txt
+/workspace.exs
