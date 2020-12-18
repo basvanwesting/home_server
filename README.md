@@ -18,7 +18,7 @@ Possibly it is due to the extra VM's needed with Docker Desktop.
 docker buildx build --platform linux/arm64 -f Dockerfile-prod -t basvanwesting/home_server_app:latest .
 ```
 
-## Install
+## Install (incremental)
 
 ```
 docker-compose pull app

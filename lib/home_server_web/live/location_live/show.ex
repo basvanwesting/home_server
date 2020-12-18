@@ -16,7 +16,7 @@ defmodule HomeServerWeb.LocationLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     location = UserLocations.get_location!(id, socket.assigns.current_user)
-    plot_keys = LocationPlotQuery.plot_keys(location.id, socket.assigns.timescale)
+    plot_keys = LocationPlotQuery.plot_keys(location.id)
 
     {:noreply,
      socket

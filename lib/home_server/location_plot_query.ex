@@ -15,7 +15,7 @@ defmodule HomeServer.LocationPlotQuery do
     defstruct @attributes
   end
 
-  def plot_keys(location_id, timescale \\ :hour)
+  def plot_keys(location_id, timescale \\ :year)
 
   def plot_keys(location_id, timescale) when is_atom(timescale) do
     plot_keys(location_id, timescale, measured_at_range_for_timescale(timescale))
