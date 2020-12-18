@@ -3,12 +3,12 @@ defmodule HomeServer.SensorMeasurementAggregator.Batch do
   @type aggregate_payload_tuple :: {SensorMeasurementAggregate.t(), Payload.t()}
   @type aggregate_payload_tuples :: [aggregate_payload_tuple]
   @type aggregate_payload_key_map :: %{
-      SensorMeasurementAggregateKey.t() => {SensorMeasurementAggregate.t(), Payload.t()}
-    }
+          SensorMeasurementAggregateKey.t() => {SensorMeasurementAggregate.t(), Payload.t()}
+        }
 
   @resolutions ["minute", "hour", "day"]
 
-  #alias HomeServer.SensorMeasurements.SensorMeasurement
+  # alias HomeServer.SensorMeasurements.SensorMeasurement
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateKey
   alias HomeServer.SensorMeasurementAggregator.{Payload, Storage}
@@ -17,11 +17,12 @@ defmodule HomeServer.SensorMeasurementAggregator.Batch do
   def process([], _), do: nil
 
   def process(sensor_measurements, batch_size) do
-    result = sensor_measurements
-    |> build_aggregates()
-    |> Storage.persist_batch(sensor_measurements)
+    result =
+      sensor_measurements
+      |> build_aggregates()
+      |> Storage.persist_batch(sensor_measurements)
 
-    if elem(result, 0) != :ok, do: raise result
+    if elem(result, 0) != :ok, do: raise(result)
 
     batch_size
     |> Storage.sensor_measurements_batch()
@@ -76,5 +77,4 @@ defmodule HomeServer.SensorMeasurementAggregator.Batch do
       Map.put(acc, key, {aggregate, Payload.factory(aggregate)})
     end)
   end
-
 end

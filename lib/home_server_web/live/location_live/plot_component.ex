@@ -7,10 +7,10 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
   # initial render
   @impl true
   def update(
-        %{plot_key: plot_key, timescale: timescale, html_class: html_class, timezone: timezone} = _assigns,
+        %{plot_key: plot_key, timescale: timescale, html_class: html_class, timezone: timezone} =
+          _assigns,
         socket
       ) do
-
     data =
       LocationPlotQuery.data(plot_key, timescale)
       |> Enum.map(fn [datetime | rest] ->

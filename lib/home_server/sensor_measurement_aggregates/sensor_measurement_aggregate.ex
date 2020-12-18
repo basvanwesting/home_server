@@ -15,7 +15,7 @@ defmodule HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate do
           min: float,
           max: float,
           stddev: float,
-          count: non_neg_integer,
+          count: non_neg_integer
         }
 
   schema "sensor_measurement_aggregates" do

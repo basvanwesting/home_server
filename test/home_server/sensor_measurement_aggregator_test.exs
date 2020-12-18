@@ -52,7 +52,14 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
         aggregated: true
       })
 
-    %{location_id: location_id, sensor_measurements: [single_sensor_measurement, invalid_sensor_measurement, aggregated_sensor_measurement | sensor_measurements]}
+    %{
+      location_id: location_id,
+      sensor_measurements: [
+        single_sensor_measurement,
+        invalid_sensor_measurement,
+        aggregated_sensor_measurement | sensor_measurements
+      ]
+    }
   end
 
   defp create_sensor_measurement_aggregates(context) do
@@ -192,9 +199,9 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
           group_by: 1
 
       assert Repo.all(query) == [
-        [false, 1],
-        [true, 12]
-      ]
+               [false, 1],
+               [true, 12]
+             ]
     end
   end
 end

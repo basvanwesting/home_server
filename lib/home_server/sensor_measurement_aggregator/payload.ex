@@ -7,11 +7,11 @@ defmodule HomeServer.SensorMeasurementAggregator.Payload do
           min: float,
           max: float,
           stddev: float,
-          count: non_neg_integer,
-          variance: float
+          variance: float,
+          count: non_neg_integer
         }
 
-  @attributes [:average, :min, :max, :stddev, :count, :variance]
+  @attributes [:average, :min, :max, :stddev, :variance, :count]
   @enforce_keys @attributes
   defstruct @attributes
 

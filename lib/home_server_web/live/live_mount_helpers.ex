@@ -4,8 +4,8 @@ defmodule HomeServerWeb.LiveMountHelpers do
   def assign_defaults(%{"user_token" => user_token} = _session, socket) do
     socket
     |> assign_new(:current_user, fn ->
-        HomeServer.Accounts.get_user_by_session_token(user_token)
-      end)
+      HomeServer.Accounts.get_user_by_session_token(user_token)
+    end)
     |> assign(:timezone, "Europe/Amsterdam")
   end
 

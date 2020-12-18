@@ -55,7 +55,7 @@ defmodule HomeServer.MixProject do
       {:amqp, "~> 1.0"},
       # {:contex, "~> 0.3.0"},
       {:contex, git: "https://github.com/mindok/contex"},
-      {:tzdata, "~> 1.0.5"},
+      {:tzdata, "~> 1.0.5"}
     ]
   end
 

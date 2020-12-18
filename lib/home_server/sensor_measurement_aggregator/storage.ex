@@ -15,12 +15,14 @@ defmodule HomeServer.SensorMeasurementAggregator.Storage do
   def sensor_measurements_batch(batch_size \\ 1000) do
     SensorMeasurement
     |> where([s], s.aggregated == false)
-    |> where([s], not(is_nil(s.location_id)))
+    |> where([s], not is_nil(s.location_id))
     |> limit(^batch_size)
     |> Repo.all()
   end
 
-  @spec list_sensor_measurement_aggregates_by_keys([SensorMeasurementAggregateKey.t()]) :: [SensorMeasurementAggregate.t()]
+  @spec list_sensor_measurement_aggregates_by_keys([SensorMeasurementAggregateKey.t()]) :: [
+          SensorMeasurementAggregate.t()
+        ]
   def list_sensor_measurement_aggregates_by_keys(keys) do
     SensorMeasurementAggregates.list_sensor_measurement_aggregates_by_keys(keys)
   end
@@ -35,10 +37,11 @@ defmodule HomeServer.SensorMeasurementAggregator.Storage do
 
   @spec persist_aggregates(Multi.t(), aggregate_payload_tuples) :: Multi.t()
   defp persist_aggregates(multi, aggregate_payload_tuples) do
-    {inserts, updates} = Enum.split_with(
-      aggregate_payload_tuples,
-      fn {aggregate, _} -> Ecto.get_meta(aggregate, :state) == :built end
-    )
+    {inserts, updates} =
+      Enum.split_with(
+        aggregate_payload_tuples,
+        fn {aggregate, _} -> Ecto.get_meta(aggregate, :state) == :built end
+      )
 
     multi
     |> persist_inserts(inserts)
@@ -53,7 +56,8 @@ defmodule HomeServer.SensorMeasurementAggregator.Storage do
         Map.merge(
           to_storeable_map(aggregate),
           Map.from_struct(payload)
-        ) end)
+        )
+      end)
       |> Enum.map(fn attrs -> Map.drop(attrs, [:id, :variance]) end)
 
     Multi.insert_all(multi, :insert_all, SensorMeasurementAggregate, insert_attrs)
@@ -85,6 +89,6 @@ defmodule HomeServer.SensorMeasurementAggregator.Storage do
   defp to_storeable_map(struct) do
     association_fields = struct.__struct__.__schema__(:associations)
     waste_fields = association_fields ++ @schema_meta_fields
-    struct |> Map.from_struct |> Map.drop(waste_fields)
+    struct |> Map.from_struct() |> Map.drop(waste_fields)
   end
 end
