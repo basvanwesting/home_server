@@ -44,6 +44,7 @@ defmodule HomeServer.SensorMeasurementAggregator do
   def sensor_measurements_batch(batch_size \\ 1000) do
     SensorMeasurement
     |> where([s], s.aggregated == false)
+    |> where([s], not(is_nil(s.location_id)))
     |> limit(^batch_size)
     |> Repo.all()
   end
@@ -54,10 +55,11 @@ defmodule HomeServer.SensorMeasurementAggregator do
   def process_batch(sensor_measurements, batch_size) do
     aggregate_payload_tuples = build_aggregates(sensor_measurements)
 
-    Multi.new()
-    |> persist_aggregates(aggregate_payload_tuples)
-    |> mark_sensor_measurements(sensor_measurements)
-    |> Repo.transaction()
+    {:ok, _} =
+      Multi.new()
+      |> persist_aggregates(aggregate_payload_tuples)
+      |> mark_sensor_measurements(sensor_measurements)
+      |> Repo.transaction()
 
     batch_size
     |> sensor_measurements_batch()
@@ -115,10 +117,37 @@ defmodule HomeServer.SensorMeasurementAggregator do
 
   @spec persist_aggregates(Multi.t(), aggregate_payload_tuples) :: Multi.t()
   def persist_aggregates(multi, aggregate_payload_tuples) do
-    Enum.reduce(aggregate_payload_tuples, multi, fn {aggregate, payload}, acc ->
-      key = SensorMeasurementAggregateKey.factory(aggregate)
+    {inserts, updates} = Enum.split_with(
+      aggregate_payload_tuples,
+      fn {aggregate, _} -> Ecto.get_meta(aggregate, :state) == :built end
+    )
+
+    multi
+    |> persist_inserts(inserts)
+    |> persist_updates(updates)
+  end
+
+  @spec persist_inserts(Multi.t(), aggregate_payload_tuples) :: Multi.t()
+  def persist_inserts(multi, aggregate_payload_tuples) do
+    insert_attrs =
+      aggregate_payload_tuples
+      |> Enum.map(fn {aggregate, payload} ->
+        Map.merge(
+          to_storeable_map(aggregate),
+          Map.from_struct(payload)
+        ) end)
+      |> Enum.map(fn attrs -> Map.drop(attrs, [:id, :variance]) end)
+
+    Multi.insert_all(multi, :insert_all, SensorMeasurementAggregate, insert_attrs)
+  end
+
+  @spec persist_updates(Multi.t(), aggregate_payload_tuples) :: Multi.t()
+  def persist_updates(multi, aggregate_payload_tuples) do
+    aggregate_payload_tuples
+    |> Enum.with_index()
+    |> Enum.reduce(multi, fn {{aggregate, payload}, index}, acc ->
       changeset = SensorMeasurementAggregate.changeset(aggregate, Map.from_struct(payload))
-      Multi.insert_or_update(acc, key, changeset)
+      Multi.update(acc, "update #{index}", changeset)
     end)
   end
 
@@ -180,5 +209,12 @@ defmodule HomeServer.SensorMeasurementAggregator do
   def set_stddev(%{count: count} = payload) when count > 1 do
     stddev = :math.sqrt(payload.variance / (payload.count - 1))
     %{payload | stddev: stddev}
+  end
+
+  @schema_meta_fields [:__meta__]
+  def to_storeable_map(struct) do
+    association_fields = struct.__struct__.__schema__(:associations)
+    waste_fields = association_fields ++ @schema_meta_fields
+    struct |> Map.from_struct |> Map.drop(waste_fields)
   end
 end

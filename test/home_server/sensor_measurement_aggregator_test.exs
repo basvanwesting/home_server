@@ -24,7 +24,7 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
         })
       end
 
-    sensor_measurement =
+    single_sensor_measurement =
       sensor_measurement_fixture(%{
         measured_at: "2020-01-01T11:12:13",
         quantity: "CO2",
@@ -33,7 +33,26 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
         location_id: location_id
       })
 
-    %{location_id: location_id, sensor_measurements: [sensor_measurement | sensor_measurements]}
+    invalid_sensor_measurement =
+      sensor_measurement_fixture(%{
+        measured_at: "2020-01-01T10:12:13",
+        quantity: "CO2",
+        value: 400.0,
+        unit: "ppm",
+        location_id: nil
+      })
+
+    aggregated_sensor_measurement =
+      sensor_measurement_fixture(%{
+        measured_at: "2020-01-01T09:12:13",
+        quantity: "CO2",
+        value: 400.0,
+        unit: "ppm",
+        location_id: location_id,
+        aggregated: true
+      })
+
+    %{location_id: location_id, sensor_measurements: [single_sensor_measurement, invalid_sensor_measurement, aggregated_sensor_measurement | sensor_measurements]}
   end
 
   defp create_sensor_measurement_aggregates(context) do
@@ -169,9 +188,13 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
       query =
         from s in SensorMeasurement,
           distinct: true,
-          select: s.aggregated
+          select: [s.aggregated, count(s.id)],
+          group_by: 1
 
-      assert Repo.all(query) == [true]
+      assert Repo.all(query) == [
+        [false, 1],
+        [true, 12]
+      ]
     end
   end
 end
