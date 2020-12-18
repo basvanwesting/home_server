@@ -7,10 +7,16 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
   # initial render
   @impl true
   def update(
-        %{plot_key: plot_key, timescale: timescale, html_class: html_class} = _assigns,
+        %{plot_key: plot_key, timescale: timescale, html_class: html_class, timezone: timezone} = _assigns,
         socket
       ) do
-    data = LocationPlotQuery.data(plot_key, timescale)
+
+    data =
+      LocationPlotQuery.data(plot_key, timescale)
+      |> Enum.map(fn [datetime | rest] ->
+        [datetime |> DateTime.shift_zone!(timezone) |> DateTime.to_naive() | rest]
+      end)
+
     plot_svg = generate_plot_svg(plot_key, data, html_class)
 
     {:ok,
@@ -19,25 +25,6 @@ defmodule HomeServerWeb.LocationLive.PlotComponent do
        plot_key: plot_key,
        timescale: timescale,
        html_class: html_class,
-       data: data,
-       plot_svg: plot_svg
-     )}
-  end
-
-  # appended render
-  def update(%{sensor_measurement: sensor_measurement} = _assigns, socket) do
-    data = socket.assigns.data ++ [{sensor_measurement.measured_at, sensor_measurement.value}]
-
-    plot_svg =
-      generate_plot_svg(
-        socket.assigns.plot_key,
-        data,
-        socket.assigns.html_class
-      )
-
-    {:ok,
-     socket
-     |> assign(
        data: data,
        plot_svg: plot_svg
      )}

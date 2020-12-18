@@ -4,7 +4,8 @@ defmodule HomeServerWeb.SensorMeasurementLive.Index do
   alias HomeServer.SensorMeasurements
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
+    socket = assign_defaults(session, socket)
     if connected?(socket), do: SensorMeasurements.subscribe()
 
     {:ok, assign(socket, :sensor_measurements, list_sensor_measurements(limit: 10)),

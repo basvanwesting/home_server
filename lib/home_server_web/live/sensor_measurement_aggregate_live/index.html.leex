@@ -20,7 +20,7 @@
   <tbody id="sensor_measurement_aggregates" phx-update="prepend">
     <%= for sensor_measurement_aggregate <- @sensor_measurement_aggregates do %>
       <tr id="sensor_measurement_aggregate-<%= sensor_measurement_aggregate.id %>">
-        <td><%= sensor_measurement_aggregate.measured_at %></td>
+        <td><%= DateTime.shift_zone!(sensor_measurement_aggregate.measured_at, @timezone) %></td>
         <td><%= sensor_measurement_aggregate.location.name %></td>
         <td><%= sensor_measurement_aggregate.resolution %></td>
         <td><%= sensor_measurement_aggregate.quantity %></td>

@@ -54,7 +54,8 @@ defmodule HomeServer.MixProject do
       {:broadway_rabbitmq, "~> 0.6.0"},
       {:amqp, "~> 1.0"},
       # {:contex, "~> 0.3.0"},
-      {:contex, git: "https://github.com/mindok/contex"}
+      {:contex, git: "https://github.com/mindok/contex"},
+      {:tzdata, "~> 1.0.5"},
     ]
   end
 

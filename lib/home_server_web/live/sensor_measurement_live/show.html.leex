@@ -11,7 +11,7 @@
   </tr>
   <tr>
     <th>Measured At</th>
-    <td><%= @sensor_measurement.measured_at %></td>
+    <td><%= DateTime.shift_zone!(@sensor_measurement.measured_at, @timezone) %></td>
   </tr>
   <tr>
     <th>Quantity</th>

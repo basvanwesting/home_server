@@ -3,7 +3,7 @@
 <table class="table table-condensed">
   <tr>
     <th>Measured At</th>
-    <td><%= @sensor_measurement_aggregate.measured_at %></td>
+    <td><%= DateTime.shift_zone!(@sensor_measurement_aggregate.measured_at, @timezone) %></td>
   </tr>
   <tr>
     <th>Location Name</th>
