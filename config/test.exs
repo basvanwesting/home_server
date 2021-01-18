@@ -10,10 +10,9 @@ config :bcrypt_elixir, :log_rounds, 1
 # Run `mix help test` for more information.
 config :home_server, HomeServer.Repo,
   username: "postgres",
-  password: "example",
+  password: "",
   database: "home_server_test#{System.get_env("MIX_TEST_PARTITION")}",
   hostname: "localhost",
-  port: 5433,
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,
