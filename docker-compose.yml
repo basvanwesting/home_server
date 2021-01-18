@@ -2,23 +2,10 @@ version: '3.7'
 
 services:
 
-  app:
-    build: .
-    volumes:
-      - .:/app
-      - dev-deps-volume:/app/deps/
-      - dev-build-volume:/app/_build/
-      - dev-node-modules-volume:/app/assets/node_modules/
-    ports:
-      - "4000:4000"
-    depends_on:
-      - db
-      - rabbitmq
-
   db:
     image: postgres
-    volumes:
-      - dev-db-volume:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
     environment:
       - "POSTGRES_PASSWORD=example"
 
@@ -27,10 +14,3 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-
-
-volumes:
-  dev-deps-volume:
-  dev-build-volume:
-  dev-node-modules-volume:
-  dev-db-volume:

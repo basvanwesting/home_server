@@ -12,7 +12,8 @@ config :home_server, HomeServer.Repo,
   username: "postgres",
   password: "example",
   database: "home_server_test#{System.get_env("MIX_TEST_PARTITION")}",
-  hostname: "db",
+  hostname: "localhost",
+  port: 5433,
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,
@@ -27,7 +28,8 @@ config :logger, level: :warn
 config :amqp, :sensor_measurements_queue, "sensor_measurements_test"
 
 config :amqp, :connection_options,
-  host: "rabbitmq",
+  host: "localhost",
+  port: 5672,
   username: "guest",
   password: "guest"
 
