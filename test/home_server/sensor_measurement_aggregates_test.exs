@@ -4,15 +4,14 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
   alias HomeServer.SensorMeasurementAggregates
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateKey
   import HomeServer.SensorMeasurementAggregatesFixtures
-  import HomeServer.LocationsFixtures
 
   setup do
-    %{id: location_id} = location_fixture()
+    location = Factory.insert(:location)
 
     sensor_measurement_aggregate =
-      sensor_measurement_aggregate_fixture(%{location_id: location_id})
+      sensor_measurement_aggregate_fixture(%{location_id: location.id})
 
-    %{location_id: location_id, sensor_measurement_aggregate: sensor_measurement_aggregate}
+    %{location: location, sensor_measurement_aggregate: sensor_measurement_aggregate}
   end
 
   describe "sensor_measurement_aggregates" do
@@ -58,10 +57,10 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
     end
 
     test "get_sensor_measurement_aggregate_by_key/1 returns the sensor_measurement_aggregate with given key",
-         %{location_id: location_id, sensor_measurement_aggregate: sensor_measurement_aggregate} do
+         %{location: location, sensor_measurement_aggregate: sensor_measurement_aggregate} do
       assert SensorMeasurementAggregates.get_sensor_measurement_aggregate_by_key(
                %SensorMeasurementAggregateKey{
-                 location_id: location_id,
+                 location_id: location.id,
                  resolution: "hour",
                  quantity: "Temperature",
                  unit: "Celsius",
@@ -71,12 +70,12 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
     end
 
     test "get_sensor_measurement_aggregate_by_key/1 returns nil with non existing key", %{
-      location_id: location_id,
+      location: location,
       sensor_measurement_aggregate: sensor_measurement_aggregate
     } do
       assert SensorMeasurementAggregates.get_sensor_measurement_aggregate_by_key(
                %SensorMeasurementAggregateKey{
-                 location_id: location_id,
+                 location_id: location.id,
                  resolution: "hour",
                  quantity: "CO2",
                  unit: "Celsius",
@@ -86,10 +85,10 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
     end
 
     test "list_sensor_measurement_aggregates_by_keys/1 returns the sensor_measurement_aggregates with given keys",
-         %{location_id: location_id, sensor_measurement_aggregate: sensor_measurement_aggregate} do
+         %{location: location, sensor_measurement_aggregate: sensor_measurement_aggregate} do
       assert SensorMeasurementAggregates.list_sensor_measurement_aggregates_by_keys([
                %SensorMeasurementAggregateKey{
-                 location_id: location_id,
+                 location_id: location.id,
                  resolution: "hour",
                  quantity: "Temperature",
                  unit: "Celsius",
@@ -98,13 +97,13 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
              ]) == [sensor_measurement_aggregate]
     end
 
-    test "create_sensor_measurement/1 with valid data creates", %{location_id: location_id} do
+    test "create_sensor_measurement/1 with valid data creates", %{location: location} do
       assert {:ok, %SensorMeasurementAggregate{} = sensor_measurement_aggregate} =
                SensorMeasurementAggregates.create_sensor_measurement_aggregate(
-                 Map.merge(@valid_attrs, %{location_id: location_id})
+                 Map.merge(@valid_attrs, %{location_id: location.id})
                )
 
-      assert sensor_measurement_aggregate.location_id == location_id
+      assert sensor_measurement_aggregate.location_id == location.id
       assert sensor_measurement_aggregate.quantity == "some quantity"
       assert sensor_measurement_aggregate.unit == "some unit"
       assert sensor_measurement_aggregate.average == 10.0

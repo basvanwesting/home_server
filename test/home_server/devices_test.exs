@@ -3,8 +3,6 @@ defmodule HomeServer.DevicesTest do
 
   alias HomeServer.Devices
 
-  import HomeServer.LocationsFixtures
-
   describe "devices" do
     alias HomeServer.Devices.Device
 
@@ -55,7 +53,7 @@ defmodule HomeServer.DevicesTest do
     end
 
     test "get_location_id_for_host/1" do
-      location = location_fixture()
+       location = Factory.insert(:location)
       _device = Factory.insert(:device, location_id: location.id, identifier: "1234")
 
       assert location.id == Devices.get_location_id_for_host("nerves-1234")

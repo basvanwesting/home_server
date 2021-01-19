@@ -3,7 +3,6 @@ defmodule HomeServer.SensorMeasurementsTest do
 
   alias HomeServer.SensorMeasurements
   import HomeServer.SensorMeasurementsFixtures
-  import HomeServer.LocationsFixtures
 
   describe "sensor_measurements" do
     alias HomeServer.SensorMeasurements.SensorMeasurement
@@ -61,7 +60,7 @@ defmodule HomeServer.SensorMeasurementsTest do
     end
 
     test "create_sensor_measurement/1 with valid data creates a sensor_measurement, with location match" do
-      location = location_fixture()
+      location = Factory.insert(:location)
       _device = Factory.insert(:device, identifier: "some host", location_id: location.id)
 
       assert {:ok, %SensorMeasurement{} = sensor_measurement} =

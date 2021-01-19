@@ -2,7 +2,6 @@ defmodule HomeServer.LocationsTest do
   use HomeServer.DataCase
 
   alias HomeServer.Locations
-  import HomeServer.LocationsFixtures
 
   describe "locations" do
     alias HomeServer.Locations.Location
@@ -12,12 +11,12 @@ defmodule HomeServer.LocationsTest do
     @invalid_attrs %{name: nil}
 
     test "list_locations/0 returns all locations" do
-      location = location_fixture()
+      location = Factory.insert(:location) |> Factory.forget(:user)
       assert Locations.list_locations() == [location]
     end
 
     test "get_location!/1 returns the location with given id" do
-      location = location_fixture()
+      location = Factory.insert(:location) |> Factory.forget(:user)
       assert Locations.get_location!(location.id) == location
     end
 
@@ -39,30 +38,30 @@ defmodule HomeServer.LocationsTest do
     end
 
     test "update_location/2 with valid data updates the location" do
-      location = location_fixture()
+      location = Factory.insert(:location)
       assert {:ok, %Location{} = location} = Locations.update_location(location, @update_attrs)
       assert location.name == "some updated name"
     end
 
     test "update_location/2 with invalid data returns error changeset" do
-      location = location_fixture()
+      location = Factory.insert(:location) |> Factory.forget(:user)
       assert {:error, %Ecto.Changeset{}} = Locations.update_location(location, @invalid_attrs)
       assert location == Locations.get_location!(location.id)
     end
 
     test "delete_location/1 deletes the location" do
-      location = location_fixture()
+      location = Factory.insert(:location)
       assert {:ok, %Location{}} = Locations.delete_location(location)
       assert_raise Ecto.NoResultsError, fn -> Locations.get_location!(location.id) end
     end
 
     test "change_location/1 returns a location changeset" do
-      location = location_fixture()
+      location = Factory.insert(:location)
       assert %Ecto.Changeset{} = Locations.change_location(location)
     end
 
     test "location_topic" do
-      location = location_fixture()
+      location = Factory.insert(:location)
 
       assert Locations.location_topic(1) == "location:1"
       assert Locations.location_topic(%{location_id: 1}) == "location:1"

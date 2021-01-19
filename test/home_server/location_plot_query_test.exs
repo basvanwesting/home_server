@@ -5,10 +5,9 @@ defmodule HomeServer.LocationPlotQueryTest do
   alias HomeServer.LocationPlotQuery.PlotKey
 
   import HomeServer.SensorMeasurementAggregatesFixtures
-  import HomeServer.LocationsFixtures
 
   defp create_location_and_sensor_measurements(_) do
-    %{id: location_id} = location = location_fixture()
+    location = Factory.insert(:location)
 
     for i <- 0..9 do
       sensor_measurement_aggregate_fixture(%{
@@ -17,7 +16,7 @@ defmodule HomeServer.LocationPlotQueryTest do
         quantity: "Temperature",
         value: 22.0 + i,
         unit: "C",
-        location_id: location_id
+        location_id: location.id
       })
 
       sensor_measurement_aggregate_fixture(%{
@@ -26,7 +25,7 @@ defmodule HomeServer.LocationPlotQueryTest do
         quantity: "CO2",
         value: 400.0 + 2 * i,
         unit: "ppm",
-        location_id: location_id
+        location_id: location.id
       })
     end
 

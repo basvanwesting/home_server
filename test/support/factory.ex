@@ -1,9 +1,19 @@
 defmodule HomeServer.Factory do
   use ExMachina.Ecto, repo: HomeServer.Repo
 
+  defdelegate forget_all(struct), to: HomeServer.Repo
+  defdelegate forget(struct, associations), to: HomeServer.Repo
+
   def device_factory do
     %HomeServer.Devices.Device{
       identifier: "some identifier"
+    }
+  end
+
+  def location_factory do
+    %HomeServer.Locations.Location{
+      name: "some name",
+      user: build(:user),
     }
   end
 

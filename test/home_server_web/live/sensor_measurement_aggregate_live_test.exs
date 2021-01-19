@@ -2,8 +2,6 @@ defmodule HomeServerWeb.SensorMeasurementAggregateLiveTest do
   use HomeServerWeb.ConnCase
 
   import Phoenix.LiveViewTest
-
-  import HomeServer.LocationsFixtures
   import HomeServer.SensorMeasurementAggregatesFixtures
 
   defp create_user(_) do
@@ -11,12 +9,12 @@ defmodule HomeServerWeb.SensorMeasurementAggregateLiveTest do
     %{user: user}
   end
 
-  defp create_sensor_measurement_aggregate(_) do
-    %{id: location_id} = location_fixture()
+  defp create_sensor_measurement_aggregate(%{user: user}) do
+    location = Factory.insert(:location, user: user)
 
     %{id: _sensor_measurement_aggregate_id} =
       sensor_measurement_aggregate =
-      sensor_measurement_aggregate_fixture(%{location_id: location_id})
+      sensor_measurement_aggregate_fixture(%{location_id: location.id})
 
     %{sensor_measurement_aggregate: sensor_measurement_aggregate}
   end

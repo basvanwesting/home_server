@@ -7,11 +7,10 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
   # alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
 
   import HomeServer.SensorMeasurementsFixtures
-  import HomeServer.LocationsFixtures
   import Ecto.Query, only: [from: 2]
 
   defp create_sensor_measurements(_) do
-    %{id: location_id} = _location = location_fixture()
+    location = Factory.insert(:location)
 
     sensor_measurements =
       for i <- 0..9 do
@@ -20,7 +19,7 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
           quantity: "CO2",
           value: 400.0 + 2 * i,
           unit: "ppm",
-          location_id: location_id
+          location_id: location.id
         })
       end
 
@@ -30,7 +29,7 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
         quantity: "CO2",
         value: 400.0,
         unit: "ppm",
-        location_id: location_id
+        location_id: location.id
       })
 
     invalid_sensor_measurement =
@@ -48,12 +47,12 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
         quantity: "CO2",
         value: 400.0,
         unit: "ppm",
-        location_id: location_id,
+        location_id: location.id,
         aggregated: true
       })
 
     %{
-      location_id: location_id,
+      location: location,
       sensor_measurements: [
         single_sensor_measurement,
         invalid_sensor_measurement,
@@ -65,7 +64,7 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
   defp create_sensor_measurement_aggregates(context) do
     attrs = [
       %{
-        location_id: context.location_id,
+        location_id: context.location.id,
         resolution: "minute",
         quantity: "CO2",
         unit: "ppm",
@@ -77,7 +76,7 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
         stddev: 20.0
       },
       %{
-        location_id: context.location_id,
+        location_id: context.location.id,
         resolution: "hour",
         quantity: "CO2",
         unit: "ppm",
