@@ -6,7 +6,6 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
   alias HomeServer.SensorMeasurements.SensorMeasurement
   # alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate
 
-  import HomeServer.SensorMeasurementsFixtures
   import Ecto.Query, only: [from: 2]
 
   defp create_sensor_measurements(_) do
@@ -14,42 +13,46 @@ defmodule HomeServer.SensorMeasurementAggregatorTest do
 
     sensor_measurements =
       for i <- 0..9 do
-        sensor_measurement_fixture(%{
+        Factory.insert(
+          :sensor_measurement,
           measured_at: "2020-01-01T13:0#{div(i, 4)}:0#{i}Z",
           quantity: "CO2",
           value: 400.0 + 2 * i,
           unit: "ppm",
           location_id: location.id
-        })
+        )
       end
 
     single_sensor_measurement =
-      sensor_measurement_fixture(%{
+      Factory.insert(
+        :sensor_measurement,
         measured_at: "2020-01-01T11:12:13",
         quantity: "CO2",
         value: 400.0,
         unit: "ppm",
         location_id: location.id
-      })
+      )
 
     invalid_sensor_measurement =
-      sensor_measurement_fixture(%{
+      Factory.insert(
+        :sensor_measurement,
         measured_at: "2020-01-01T10:12:13",
         quantity: "CO2",
         value: 400.0,
         unit: "ppm",
         location_id: nil
-      })
+      )
 
     aggregated_sensor_measurement =
-      sensor_measurement_fixture(%{
+      Factory.insert(
+        :sensor_measurement,
         measured_at: "2020-01-01T09:12:13",
         quantity: "CO2",
         value: 400.0,
         unit: "ppm",
         location_id: location.id,
         aggregated: true
-      })
+      )
 
     %{
       location: location,

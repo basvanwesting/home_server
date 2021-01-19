@@ -2,7 +2,6 @@ defmodule HomeServer.SensorMeasurementsTest do
   use HomeServer.DataCase
 
   alias HomeServer.SensorMeasurements
-  import HomeServer.SensorMeasurementsFixtures
 
   describe "sensor_measurements" do
     alias HomeServer.SensorMeasurements.SensorMeasurement
@@ -33,12 +32,12 @@ defmodule HomeServer.SensorMeasurementsTest do
     }
 
     test "list_sensor_measurements/0 returns all sensor_measurements" do
-      sensor_measurement = sensor_measurement_fixture()
+      sensor_measurement = Factory.insert(:sensor_measurement)
       assert SensorMeasurements.list_sensor_measurements() == [sensor_measurement]
     end
 
     test "get_sensor_measurement!/1 returns the sensor_measurement with given id" do
-      sensor_measurement = sensor_measurement_fixture()
+      sensor_measurement = Factory.insert(:sensor_measurement)
 
       assert SensorMeasurements.get_sensor_measurement!(sensor_measurement.id) ==
                sensor_measurement
@@ -76,7 +75,7 @@ defmodule HomeServer.SensorMeasurementsTest do
     end
 
     test "update_sensor_measurement/2 with valid data updates the sensor_measurement" do
-      sensor_measurement = sensor_measurement_fixture()
+      sensor_measurement = Factory.insert(:sensor_measurement)
 
       assert {:ok, %SensorMeasurement{} = sensor_measurement} =
                SensorMeasurements.update_sensor_measurement(sensor_measurement, @update_attrs)
@@ -92,7 +91,7 @@ defmodule HomeServer.SensorMeasurementsTest do
     end
 
     test "update_sensor_measurement/2 with invalid data returns error changeset" do
-      sensor_measurement = sensor_measurement_fixture()
+      sensor_measurement = Factory.insert(:sensor_measurement)
 
       assert {:error, %Ecto.Changeset{}} =
                SensorMeasurements.update_sensor_measurement(sensor_measurement, @invalid_attrs)
@@ -102,7 +101,7 @@ defmodule HomeServer.SensorMeasurementsTest do
     end
 
     test "delete_sensor_measurement/1 deletes the sensor_measurement" do
-      sensor_measurement = sensor_measurement_fixture()
+      sensor_measurement = Factory.insert(:sensor_measurement)
 
       assert {:ok, %SensorMeasurement{}} =
                SensorMeasurements.delete_sensor_measurement(sensor_measurement)
@@ -113,7 +112,7 @@ defmodule HomeServer.SensorMeasurementsTest do
     end
 
     test "change_sensor_measurement/1 returns a sensor_measurement changeset" do
-      sensor_measurement = sensor_measurement_fixture()
+      sensor_measurement = Factory.insert(:sensor_measurement)
       assert %Ecto.Changeset{} = SensorMeasurements.change_sensor_measurement(sensor_measurement)
     end
 

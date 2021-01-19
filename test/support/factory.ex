@@ -4,16 +4,28 @@ defmodule HomeServer.Factory do
   defdelegate forget_all(struct), to: HomeServer.Repo
   defdelegate forget(struct, associations), to: HomeServer.Repo
 
+  def location_factory do
+    %HomeServer.Locations.Location{
+      name: "some name",
+      user: build(:user),
+    }
+  end
+
   def device_factory do
     %HomeServer.Devices.Device{
       identifier: "some identifier"
     }
   end
 
-  def location_factory do
-    %HomeServer.Locations.Location{
-      name: "some name",
-      user: build(:user),
+  def sensor_measurement_factory do
+    %HomeServer.SensorMeasurements.SensorMeasurement{
+      measured_at: "2020-01-01T12:00:00Z",
+      quantity: "Temperature",
+      value: "22.0",
+      unit: "Celsius",
+      host: "localhost",
+      sensor: "A0",
+      aggregated: false,
     }
   end
 

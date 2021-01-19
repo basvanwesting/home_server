@@ -3,15 +3,13 @@ defmodule HomeServerWeb.SensorMeasurementLiveTest do
 
   import Phoenix.LiveViewTest
 
-  import HomeServer.SensorMeasurementsFixtures
-
   defp create_user(_) do
     %{id: _user_id} = user = Factory.insert(:user)
     %{user: user}
   end
 
   defp create_sensor_measurement(_) do
-    %{id: _sensor_measurement_id} = sensor_measurement = sensor_measurement_fixture()
+    sensor_measurement = Factory.insert(:sensor_measurement)
     %{sensor_measurement: sensor_measurement}
   end
 
