@@ -25,6 +25,7 @@ defmodule HomeServerWeb.ConnCase do
       import HomeServerWeb.ConnCase
 
       alias HomeServerWeb.Router.Helpers, as: Routes
+      alias HomeServer.Factory
 
       # The default endpoint for testing
       @endpoint HomeServerWeb.Endpoint

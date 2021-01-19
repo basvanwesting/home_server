@@ -18,7 +18,7 @@ defmodule HomeServer.DataCase do
 
   using do
     quote do
-      alias HomeServer.Repo
+      alias HomeServer.{Factory, Repo}
 
       import Ecto
       import Ecto.Changeset

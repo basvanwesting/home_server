@@ -2,7 +2,6 @@ defmodule HomeServer.UserDevicesTest do
   use HomeServer.DataCase
 
   alias HomeServer.UserDevices
-  import HomeServer.DevicesFixtures
   import HomeServer.AccountsFixtures
 
   describe "devices" do
@@ -14,15 +13,15 @@ defmodule HomeServer.UserDevicesTest do
 
     test "list_devices/1 returns all devices" do
       %{id: user_id} = user = user_fixture()
-      device = device_fixture(%{user_id: user_id})
-      other_device = device_fixture(%{user_id: user_id})
-      _other_device_for_other_user = device_fixture()
+      device = Factory.insert(:device, user_id: user_id)
+      other_device = Factory.insert(:device, user_id: user_id)
+      _other_device_for_other_user = Factory.insert(:device)
       assert MapSet.new(UserDevices.list_devices(user)) == MapSet.new([device, other_device])
     end
 
     test "get_device/2 returns the device with given id" do
       %{id: user_id} = user = user_fixture()
-      device = device_fixture(%{user_id: user_id})
+      device = Factory.insert(:device, user_id: user_id)
       assert UserDevices.get_device!(device.id, user) == device
     end
 
@@ -42,28 +41,28 @@ defmodule HomeServer.UserDevicesTest do
     end
 
     test "update_device/2 with valid data updates the device" do
-      device = device_fixture()
+      device = Factory.insert(:device)
       assert {:ok, %Device{} = device} = UserDevices.update_device(device, @update_attrs)
       assert device.identifier == "some updated identifier"
     end
 
     test "update_device/2 with invalid data returns error changeset" do
       %{id: user_id} = user = user_fixture()
-      device = device_fixture(%{user_id: user_id})
+      device = Factory.insert(:device, user_id: user_id)
       assert {:error, %Ecto.Changeset{}} = UserDevices.update_device(device, @invalid_attrs)
       assert device == UserDevices.get_device!(device.id, user)
     end
 
     test "delete_device/1 deletes the device" do
       %{id: user_id} = user = user_fixture()
-      device = device_fixture(%{user_id: user_id})
+      device = Factory.insert(:device, user_id: user_id)
       assert {:ok, %Device{}} = UserDevices.delete_device(device)
       assert_raise Ecto.NoResultsError, fn -> UserDevices.get_device!(device.id, user) end
     end
 
     test "change_device/2 returns a device changeset" do
       %{id: user_id} = user = user_fixture()
-      device = device_fixture(%{user_id: user_id})
+      device = Factory.insert(:device, user_id: user_id)
       assert %Ecto.Changeset{} = UserDevices.change_device(device, user)
     end
   end

@@ -36,6 +36,7 @@ defmodule HomeServer.MixProject do
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:phx_gen_auth, "~> 0.5", only: [:dev], runtime: false},
       {:assertions, "~> 0.10", only: :test},
+      {:ex_machina, "~> 2.5.0", only: :test},
       {:bcrypt_elixir, "~> 2.0"},
       {:phoenix, "~> 1.5.5"},
       {:phoenix_ecto, "~> 4.1"},
