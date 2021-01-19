@@ -3,7 +3,6 @@ defmodule HomeServerWeb.UserAuthTest do
 
   alias HomeServer.Accounts
   alias HomeServerWeb.UserAuth
-  import HomeServer.AccountsFixtures
 
   setup %{conn: conn} do
     conn =
@@ -11,7 +10,7 @@ defmodule HomeServerWeb.UserAuthTest do
       |> Map.replace!(:secret_key_base, HomeServerWeb.Endpoint.config(:secret_key_base))
       |> init_test_session(%{})
 
-    %{user: user_fixture(), conn: conn}
+    %{user: Factory.insert(:user), conn: conn}
   end
 
   describe "log_in_user/3" do

@@ -4,14 +4,13 @@ defmodule HomeServerWeb.LocationLiveTest do
   import Phoenix.LiveViewTest
 
   import HomeServer.LocationsFixtures
-  import HomeServer.AccountsFixtures
 
   @create_attrs %{name: "some name"}
   @update_attrs %{name: "some updated name"}
   @invalid_attrs %{name: nil}
 
   defp create_user_and_location(_) do
-    %{id: user_id} = user = user_fixture()
+    %{id: user_id} = user = Factory.insert(:user)
     %{id: _location_id} = location = location_fixture(%{user_id: user_id})
 
     %{location: location, user: user}

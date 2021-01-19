@@ -3,10 +3,9 @@ defmodule HomeServerWeb.UserResetPasswordControllerTest do
 
   alias HomeServer.Accounts
   alias HomeServer.Repo
-  import HomeServer.AccountsFixtures
 
   setup do
-    %{user: user_fixture()}
+    %{user: Factory.insert(:user)}
   end
 
   describe "GET /users/reset_password" do
@@ -45,7 +44,7 @@ defmodule HomeServerWeb.UserResetPasswordControllerTest do
   describe "GET /users/reset_password/:token" do
     setup %{user: user} do
       token =
-        extract_user_token(fn url ->
+        Factory.extract_user_token(fn url ->
           Accounts.deliver_user_reset_password_instructions(user, url)
         end)
 
@@ -67,7 +66,7 @@ defmodule HomeServerWeb.UserResetPasswordControllerTest do
   describe "PUT /users/reset_password/:token" do
     setup %{user: user} do
       token =
-        extract_user_token(fn url ->
+        Factory.extract_user_token(fn url ->
           Accounts.deliver_user_reset_password_instructions(user, url)
         end)
 

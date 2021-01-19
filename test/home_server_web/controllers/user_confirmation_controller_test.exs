@@ -3,10 +3,9 @@ defmodule HomeServerWeb.UserConfirmationControllerTest do
 
   alias HomeServer.Accounts
   alias HomeServer.Repo
-  import HomeServer.AccountsFixtures
 
   setup do
-    %{user: user_fixture()}
+    %{user: Factory.insert(:user)}
   end
 
   describe "GET /users/confirm" do
@@ -58,7 +57,7 @@ defmodule HomeServerWeb.UserConfirmationControllerTest do
   describe "GET /users/confirm/:token" do
     test "confirms the given token once", %{conn: conn, user: user} do
       token =
-        extract_user_token(fn url ->
+        Factory.extract_user_token(fn url ->
           Accounts.deliver_user_confirmation_instructions(user, url)
         end)
 

@@ -1,8 +1,6 @@
 defmodule HomeServerWeb.UserRegistrationControllerTest do
   use HomeServerWeb.ConnCase, async: true
 
-  import HomeServer.AccountsFixtures
-
   describe "GET /users/register" do
     test "renders registration page", %{conn: conn} do
       conn = get(conn, Routes.user_registration_path(conn, :new))
@@ -13,7 +11,7 @@ defmodule HomeServerWeb.UserRegistrationControllerTest do
     end
 
     test "redirects if already logged in", %{conn: conn} do
-      conn = conn |> log_in_user(user_fixture()) |> get(Routes.user_registration_path(conn, :new))
+      conn = conn |> log_in_user(Factory.insert(:user)) |> get(Routes.user_registration_path(conn, :new))
       assert redirected_to(conn) == "/"
     end
   end
@@ -21,11 +19,11 @@ defmodule HomeServerWeb.UserRegistrationControllerTest do
   describe "POST /users/register" do
     @tag :capture_log
     test "creates account and logs the user in", %{conn: conn} do
-      email = unique_user_email()
+      email = Factory.unique_user_email()
 
       conn =
         post(conn, Routes.user_registration_path(conn, :create), %{
-          "user" => %{"email" => email, "password" => valid_user_password()}
+          "user" => %{"email" => email, "password" => Factory.valid_user_password()}
         })
 
       assert get_session(conn, :user_token)

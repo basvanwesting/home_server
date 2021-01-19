@@ -3,7 +3,6 @@ defmodule HomeServer.LocationsTest do
 
   alias HomeServer.Locations
   import HomeServer.LocationsFixtures
-  import HomeServer.AccountsFixtures
 
   describe "locations" do
     alias HomeServer.Locations.Location
@@ -23,7 +22,7 @@ defmodule HomeServer.LocationsTest do
     end
 
     test "create_location/1 with valid data creates a location" do
-      %{id: user_id} = user = user_fixture()
+      %{id: user_id} = user = Factory.insert(:user)
 
       assert {:ok, %Location{} = location} =
                Locations.create_location(Map.put(@valid_attrs, :user_id, user_id))

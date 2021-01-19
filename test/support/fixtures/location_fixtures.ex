@@ -5,7 +5,6 @@ defmodule HomeServer.LocationsFixtures do
   """
 
   alias HomeServer.Locations
-  import HomeServer.AccountsFixtures
 
   def location_fixture(attrs \\ %{})
 
@@ -22,7 +21,7 @@ defmodule HomeServer.LocationsFixtures do
   end
 
   def location_fixture(attrs) do
-    %{id: user_id} = _user = user_fixture()
+    %{id: user_id} = _user = HomeServer.Factory.insert(:user)
     location_fixture(Map.put(attrs, :user_id, user_id))
   end
 end

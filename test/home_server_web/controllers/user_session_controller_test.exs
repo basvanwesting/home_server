@@ -1,10 +1,8 @@
 defmodule HomeServerWeb.UserSessionControllerTest do
   use HomeServerWeb.ConnCase, async: true
 
-  import HomeServer.AccountsFixtures
-
   setup do
-    %{user: user_fixture()}
+    %{user: Factory.insert(:user)}
   end
 
   describe "GET /users/log_in" do
@@ -26,7 +24,7 @@ defmodule HomeServerWeb.UserSessionControllerTest do
     test "logs the user in", %{conn: conn, user: user} do
       conn =
         post(conn, Routes.user_session_path(conn, :create), %{
-          "user" => %{"email" => user.email, "password" => valid_user_password()}
+          "user" => %{"email" => user.email, "password" => Factory.valid_user_password()}
         })
 
       assert get_session(conn, :user_token)
@@ -45,7 +43,7 @@ defmodule HomeServerWeb.UserSessionControllerTest do
         post(conn, Routes.user_session_path(conn, :create), %{
           "user" => %{
             "email" => user.email,
-            "password" => valid_user_password(),
+            "password" => Factory.valid_user_password(),
             "remember_me" => "true"
           }
         })

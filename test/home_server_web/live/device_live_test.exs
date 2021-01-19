@@ -3,14 +3,12 @@ defmodule HomeServerWeb.DeviceLiveTest do
 
   import Phoenix.LiveViewTest
 
-  import HomeServer.AccountsFixtures
-
   @create_attrs %{identifier: "some identifier"}
   @update_attrs %{identifier: "some updated identifier"}
   @invalid_attrs %{identifier: nil}
 
   defp create_user_and_device(_) do
-    %{id: user_id} = user = user_fixture()
+    %{id: user_id} = user = Factory.insert(:user)
     device = Factory.insert(:device, user_id: user_id)
 
     %{device: device, user: user}

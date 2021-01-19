@@ -2,7 +2,6 @@ defmodule HomeServerWeb.UserSettingsControllerTest do
   use HomeServerWeb.ConnCase, async: true
 
   alias HomeServer.Accounts
-  import HomeServer.AccountsFixtures
 
   setup :register_and_log_in_user
 
@@ -24,7 +23,7 @@ defmodule HomeServerWeb.UserSettingsControllerTest do
     test "updates the user password and resets tokens", %{conn: conn, user: user} do
       new_password_conn =
         put(conn, Routes.user_settings_path(conn, :update_password), %{
-          "current_password" => valid_user_password(),
+          "current_password" => Factory.valid_user_password(),
           "user" => %{
             "password" => "new valid password",
             "password_confirmation" => "new valid password"
@@ -62,8 +61,8 @@ defmodule HomeServerWeb.UserSettingsControllerTest do
     test "updates the user email", %{conn: conn, user: user} do
       conn =
         put(conn, Routes.user_settings_path(conn, :update_email), %{
-          "current_password" => valid_user_password(),
-          "user" => %{"email" => unique_user_email()}
+          "current_password" => Factory.valid_user_password(),
+          "user" => %{"email" => Factory.unique_user_email()}
         })
 
       assert redirected_to(conn) == Routes.user_settings_path(conn, :edit)
@@ -87,10 +86,10 @@ defmodule HomeServerWeb.UserSettingsControllerTest do
 
   describe "GET /users/settings/confirm_email/:token" do
     setup %{user: user} do
-      email = unique_user_email()
+      email = Factory.unique_user_email()
 
       token =
-        extract_user_token(fn url ->
+        Factory.extract_user_token(fn url ->
           Accounts.deliver_update_email_instructions(%{user | email: email}, user.email, url)
         end)
 

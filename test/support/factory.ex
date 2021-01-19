@@ -1,12 +1,26 @@
 defmodule HomeServer.Factory do
   use ExMachina.Ecto, repo: HomeServer.Repo
 
-  alias HomeServer.Devices.Device
-
   def device_factory do
-    %Device{
+    %HomeServer.Devices.Device{
       identifier: "some identifier"
     }
+  end
+
+  def user_factory do
+    %HomeServer.Accounts.User{
+      email: unique_user_email(),
+      hashed_password: valid_user_password() |> Bcrypt.hash_pwd_salt(),
+    }
+  end
+
+  def unique_user_email, do: sequence(:email, &"user-#{&1}@example.com")
+  def valid_user_password, do: "hello world!"
+
+  def extract_user_token(fun) do
+    {:ok, captured} = fun.(&"[TOKEN]#{&1}[TOKEN]")
+    [_, token, _] = String.split(captured.body, "[TOKEN]")
+    token
   end
 
 end
