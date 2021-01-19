@@ -4,29 +4,29 @@ defmodule HomeServer.LocationPlotQueryTest do
   alias HomeServer.LocationPlotQuery
   alias HomeServer.LocationPlotQuery.PlotKey
 
-  import HomeServer.SensorMeasurementAggregatesFixtures
-
   defp create_location_and_sensor_measurements(_) do
     location = Factory.insert(:location)
 
     for i <- 0..9 do
-      sensor_measurement_aggregate_fixture(%{
+      Factory.insert(
+        :sensor_measurement_aggregate,
         measured_at: "2020-01-01T12:0#{i}:00Z",
         resolution: "minute",
         quantity: "Temperature",
-        value: 22.0 + i,
+        average: 22.0 + i,
         unit: "C",
         location_id: location.id
-      })
+      )
 
-      sensor_measurement_aggregate_fixture(%{
+      Factory.insert(
+        :sensor_measurement_aggregate,
         measured_at: "2020-01-01T12:0#{i}:00Z",
         resolution: "minute",
         quantity: "CO2",
-        value: 400.0 + 2 * i,
+        average: 400.0 + 2 * i,
         unit: "ppm",
         location_id: location.id
-      })
+      )
     end
 
     %{location: location}
@@ -59,13 +59,13 @@ defmodule HomeServer.LocationPlotQueryTest do
         LocationPlotQuery.data(plot_key, :hour, {"2020-01-01T12:01:00Z", "2020-01-01T12:07:00Z"})
 
       assert result == [
-               [~U[2020-01-01 12:01:00Z], 25.0, 23.0, 22.0, 21.0, 20.0],
-               [~U[2020-01-01 12:02:00Z], 25.0, 23.0, 22.0, 21.0, 20.0],
-               [~U[2020-01-01 12:03:00Z], 25.0, 23.0, 22.0, 21.0, 20.0],
-               [~U[2020-01-01 12:04:00Z], 25.0, 23.0, 22.0, 21.0, 20.0],
-               [~U[2020-01-01 12:05:00Z], 25.0, 23.0, 22.0, 21.0, 20.0],
-               [~U[2020-01-01 12:06:00Z], 25.0, 23.0, 22.0, 21.0, 20.0],
-               [~U[2020-01-01 12:07:00Z], 25.0, 23.0, 22.0, 21.0, 20.0]
+               [~U[2020-01-01 12:01:00Z], 25.0, 403.0, 402.0, 401.0, 20.0],
+               [~U[2020-01-01 12:02:00Z], 25.0, 405.0, 404.0, 403.0, 20.0],
+               [~U[2020-01-01 12:03:00Z], 25.0, 407.0, 406.0, 405.0, 20.0],
+               [~U[2020-01-01 12:04:00Z], 25.0, 409.0, 408.0, 407.0, 20.0],
+               [~U[2020-01-01 12:05:00Z], 25.0, 411.0, 410.0, 409.0, 20.0],
+               [~U[2020-01-01 12:06:00Z], 25.0, 413.0, 412.0, 411.0, 20.0],
+               [~U[2020-01-01 12:07:00Z], 25.0, 415.0, 414.0, 413.0, 20.0]
              ]
     end
   end

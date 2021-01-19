@@ -29,6 +29,20 @@ defmodule HomeServer.Factory do
     }
   end
 
+  def sensor_measurement_aggregate_factory do
+    %HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregate{
+      resolution: "hour",
+      quantity: "Temperature",
+      unit: "Celsius",
+      measured_at: "2020-01-01T12:00:00Z",
+      average: "22.0",
+      min: "20.0",
+      max: "25.0",
+      stddev: "1.0",
+      count: 60
+    }
+  end
+
   def user_factory do
     %HomeServer.Accounts.User{
       email: unique_user_email(),

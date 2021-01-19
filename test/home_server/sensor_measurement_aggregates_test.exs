@@ -3,13 +3,12 @@ defmodule HomeServer.SensorMeasurementAggregatesTest do
 
   alias HomeServer.SensorMeasurementAggregates
   alias HomeServer.SensorMeasurementAggregates.SensorMeasurementAggregateKey
-  import HomeServer.SensorMeasurementAggregatesFixtures
 
   setup do
     location = Factory.insert(:location)
 
     sensor_measurement_aggregate =
-      sensor_measurement_aggregate_fixture(%{location_id: location.id})
+      Factory.insert(:sensor_measurement_aggregate, location_id: location.id)
 
     %{location: location, sensor_measurement_aggregate: sensor_measurement_aggregate}
   end
